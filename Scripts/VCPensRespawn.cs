@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Components;
@@ -12,14 +13,33 @@ namespace z3y
 
     public class VCPensRespawn : UdonSharpBehaviour
     {
-        [SerializeField] private VRCObjectSync pen;
-        [SerializeField] private VCPensPen z3yPens;
+        [SerializeField] private GameObject penHolder;
+        private VCPensPen[] _vcPens;
+        private VCPensEraser[] _eraser;
+
+        private void Start()
+        {
+            _vcPens = penHolder.GetComponentsInChildren<VCPensPen>();
+            _eraser = penHolder.GetComponentsInChildren<VCPensEraser>();
+        }
+
 
         public override void Interact()
         {
-            SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(RespawnPen));
+            RespawnPen();
         }
 
-        public void RespawnPen() => pen.Respawn();
+        public void RespawnPen()
+        {
+            foreach (var a in _vcPens)
+            {
+                a.SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(a.Respawn));
+            }
+
+            foreach (var b in _eraser)
+            {
+                b.SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(b.Respawn));
+            }
+        }
     }
 }

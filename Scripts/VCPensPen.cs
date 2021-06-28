@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Resources;
 using UdonSharp;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Components;
 using VRC.SDKBase;
 using VRC.Udon.Common.Interfaces;
 
@@ -17,6 +19,8 @@ namespace z3y
         private int _lineNumber;
         private bool _isWriting;
         public bool isHeld;
+
+        [SerializeField] private VRCObjectSync vrcObjectSync;
 
         private int _time;
 
@@ -37,9 +41,14 @@ namespace z3y
 
         public override void OnPickup()
         {
-            if (!Networking.IsOwner(penManager.gameObject)) Networking.SetOwner(Networking.LocalPlayer, penManager.gameObject);
+            TransferOwnership();  
             
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(OnStartHolding));
+        }
+
+        private void TransferOwnership()
+        {
+            if (!Networking.IsOwner(penManager.gameObject)) Networking.SetOwner(Networking.LocalPlayer, penManager.gameObject);
         }
 
         public override void OnDrop() => SendCustomNetworkEvent(NetworkEventTarget.All, nameof(OnStopHolding));
@@ -124,6 +133,14 @@ namespace z3y
             newLineRend.BakeMesh(eraseCollider);
             _meshCollider = newLineRend.GetComponent<MeshCollider>();
             _meshCollider.sharedMesh = eraseCollider;
+        }
+
+        public void Respawn()
+        {
+            if (!isHeld)
+            {
+                vrcObjectSync.Respawn();
+            }
         }
     }
 }

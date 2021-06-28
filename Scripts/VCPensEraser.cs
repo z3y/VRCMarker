@@ -2,6 +2,7 @@
 using System;
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Components;
 using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
@@ -17,12 +18,24 @@ namespace z3y
         private LineRenderer _lineRendererEnter;
         private LineRenderer _lineRendererExit;
 
+        [SerializeField] private VRCObjectSync vrcObjectSync;
+
+        public void Respawn()
+        {
+            vrcObjectSync.Respawn();
+        }
+
         public override void OnPickupUseDown() => SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StartErasing));
         public override void OnPickupUseUp() => SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopErasing));
         public void StartErasing() => _isErasing = true;
         public void StopErasing() => _isErasing = false;
 
         public override void OnPickup()
+        {
+            TransferOwnership();
+        }
+
+        private void TransferOwnership()
         {
             if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);
         }
