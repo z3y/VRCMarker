@@ -12,3 +12,4 @@ Lines are synced using manual sync. Their positions are getting sent over the ne
 The vertex color shader uses centroid sampling so no weird shimmering
 
 Each line you write instantiates a new game object. There is no pooling system however other popular pen prefabs do the same and I havent ran into any performance issues.
+If there's any issues dm z3y#3214
