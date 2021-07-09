@@ -107,7 +107,7 @@ namespace z3y
 
         public void CreateLineRenderer(Vector3[] pos)
         {
-            if (pos.Length < 500 && Networking.GetServerTimeInMilliseconds() - _time > 200)
+            if (pos.Length < 1000 && Networking.GetServerTimeInMilliseconds() - _time > 200)
             {
                 Array.Reverse(pos);
                 penManager.linesArray = pos;
