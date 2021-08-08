@@ -8,6 +8,9 @@ Using new udon networking manual sync, with only one ink material and a simple i
 
 ![Preview](https://i.imgur.com/CvJOy5f.png)
 
+
+![DrawCalls](https://i.imgur.com/unOwaKy.png)
+
 If you don't like instantiating don't use them, still more optimized than many other pens currently.
 
 Requires [Udon#](https://github.com/MerlinVR/UdonSharp)
