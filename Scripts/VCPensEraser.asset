@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: VCPensEraser
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d22befdea9c63ea48bf5e95a43bbb475,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 7fa9530160b74cc419e82f216e9d0cb9,
     type: 2}
   udonAssembly: 
   assemblyError: 
