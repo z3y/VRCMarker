@@ -134,6 +134,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Example
       objectReference: {fileID: 0}
+    - target: {fileID: 1581502714370762725, guid: 74a544c129ab1b74cae327c94f3952dd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1729446505518351664, guid: 74a544c129ab1b74cae327c94f3952dd,
         type: 3}
       propertyPath: m_RootOrder
@@ -191,6 +196,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74a544c129ab1b74cae327c94f3952dd, type: 3}
+--- !u!1 &549858983 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1094421957795851142, guid: 8894fa7e4588a5c4fab98453e558847d,
+    type: 3}
+  m_PrefabInstance: {fileID: 720994241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &549858988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 549858983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 229740497, guid: 4ecd63eff847044b68db9453ce219299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentType: 1
 --- !u!1001 &720994241
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -425,7 +449,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
