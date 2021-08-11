@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: VCPensManager
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: a27d421efb565f3469ce9d78dddc4205,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 70a2d6c1b5e652c4c91c007101ae99d5,
     type: 2}
   udonAssembly: 
   assemblyError: 
