@@ -1,5 +1,5 @@
 # Pens for VRChat
-### [Download](https://github.com/z3y/vertex-color-pens/archive/refs/heads/main.zip)
+### [Download](https://github.com/z3y/vertex-color-pens/releases/)
 Using new udon networking manual sync, with only one ink material and a simple inspector.
 
 [Readme](https://github.com/z3y/vertex-color-pens/blob/main/readme.txt)
