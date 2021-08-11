@@ -1,9 +1,5 @@
 # Pens for VRChat
 ### [Download](https://github.com/z3y/vertex-color-pens/archive/refs/heads/main.zip)
-### 2019 issues... If the pens are not working right click the folder and reimport
-#### I keep getting inconsistent results and references get removed randomly on import, if it doesnt work try reimporting again
-https://github.com/z3y/vertex-color-pens/issues/1#issuecomment-896910146
-
 
 Using new udon networking manual sync, with only one ink material and a simple inspector.
 
