@@ -11,7 +11,7 @@ namespace z3y
 {
     public class VCPensPen : UdonSharpBehaviour
     {
-        private TrailRenderer _trailRenderer;
+        [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Transform penMesh;
         [SerializeField] private Transform lines;
         private Vector3[] _inkPositions;
@@ -31,7 +31,6 @@ namespace z3y
 
         public void PenInit(Gradient inkColor, float inkWidth, float minVertexDistance)
         {
-            _trailRenderer = gameObject.GetComponent<TrailRenderer>();
             _trailRenderer.widthMultiplier = inkWidth;
             _trailRenderer.colorGradient = inkColor;
             _trailRenderer.minVertexDistance = minVertexDistance;
@@ -75,8 +74,6 @@ namespace z3y
         public override void OnPickupUseDown()
         {
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StartWriting));
-            _trailRenderer.AddPosition(transform.position);
-            
         }
 
         public void StartWriting()
@@ -92,7 +89,7 @@ namespace z3y
         {
             // not sure how much data i can send so theres a limit after which lines wont get sent over the network but handled locally
             // adjust if you think its too much / too little
-            if(_trailRenderer.positionCount < 500 && Networking.GetServerTimeInMilliseconds() - _time > 200) {
+            if(_trailRenderer.positionCount < 1000 && Networking.GetServerTimeInMilliseconds() - _time > 300) {
                 GetLinePositions();
                 CreateLineRenderer(_inkPositions);
             }
@@ -122,7 +119,6 @@ namespace z3y
         public void StopWritingWithoutSerializing()
         {
             GetLinePositions();
-
             HandleSerialization(_inkPositions);
         }
 
