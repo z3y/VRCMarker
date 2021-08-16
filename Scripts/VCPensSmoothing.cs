@@ -9,7 +9,6 @@ namespace z3y
     public class VCPensSmoothing : UdonSharpBehaviour
     {
 
-        private Transform smoothTo;
         [SerializeField] private VCPensManager penManager;
         [SerializeField] private VCPensPen pen;
 

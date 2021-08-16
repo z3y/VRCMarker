@@ -74,11 +74,12 @@ namespace z3y
         public override void OnPickupUseDown()
         {
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StartWriting));
+            _trailRenderer.AddPosition(_trailRenderer.transform.position);
         }
 
         public void StartWriting()
         {
-           _trailRenderer.transform.position = transform.position;
+            _trailRenderer.transform.position = transform.position;
             _trailRenderer.enabled = true;
             _isWriting = _trailRenderer.enabled;
             _trailRenderer.emitting = true;
@@ -92,10 +93,10 @@ namespace z3y
             if(_trailRenderer.positionCount < 1000 && Networking.GetServerTimeInMilliseconds() - _time > 300) {
                 GetLinePositions();
                 CreateLineRenderer(_inkPositions);
+                SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopWriting));
             }
             else SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopWritingWithoutSerializing));
 
-            SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopWriting));
             _time = Networking.GetServerTimeInMilliseconds();
         }
 
@@ -109,7 +110,7 @@ namespace z3y
 
         public void GetLinePositions()
         {
-            _trailRenderer.AddPosition(_trailRenderer.transform.position);
+            _trailRenderer.AddPosition(_trailRenderer.transform.position); // add a position to the end even if the min distance is not reached
             _inkPositions = new Vector3[_trailRenderer.positionCount];
             _trailRenderer.GetPositions(_inkPositions);
             Array.Reverse(_inkPositions);
@@ -118,8 +119,10 @@ namespace z3y
 
         public void StopWritingWithoutSerializing()
         {
+            //_trailRenderer.AddPosition(_trailRenderer.transform.position);
             GetLinePositions();
             HandleSerialization(_inkPositions);
+            StopWriting();
         }
 
         public void CreateLineRenderer(Vector3[] pos)
@@ -136,9 +139,11 @@ namespace z3y
             _newLine.transform.SetParent(lines);
             _newLine.name = $"-ln{_lineNumber++}";
             var newLineRend = _newLine.GetComponent<LineRenderer>();
-            newLineRend.colorGradient = _trailRenderer.colorGradient;
-            newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
 
+            // if the line is just a dot dont use the whole gradient for the color
+            newLineRend.colorGradient = pos.Length > 1 ? _trailRenderer.colorGradient : penManager.dotColor;
+
+            newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
             newLineRend.positionCount = pos.Length;
             newLineRend.SetPositions(pos);
 
