@@ -29,11 +29,12 @@ namespace z3y
         private GameObject _newLine;
         [SerializeField] private LineRenderer lineRendererPrefab;
 
-        public void PenInit(Gradient inkColor, float inkWidth)
+        public void PenInit(Gradient inkColor, float inkWidth, float minVertexDistance)
         {
             _trailRenderer = gameObject.GetComponent<TrailRenderer>();
             _trailRenderer.widthMultiplier = inkWidth;
             _trailRenderer.colorGradient = inkColor;
+            _trailRenderer.minVertexDistance = minVertexDistance;
             _time = Networking.GetServerTimeInMilliseconds();
             
            _SetVertexColor();
@@ -89,10 +90,14 @@ namespace z3y
     
         public override void OnPickupUseUp()
         {
-            _trailRenderer.AddPosition(_trailRenderer.transform.position);
-            _inkPositions = new Vector3[_trailRenderer.positionCount];
-            _trailRenderer.GetPositions(_inkPositions);
-            CreateLineRenderer(_inkPositions);
+            // not sure how much data i can send so theres a limit after which lines wont get sent over the network but handled locally
+            // adjust if you think its too much / too little
+            if(_trailRenderer.positionCount < 500 && Networking.GetServerTimeInMilliseconds() - _time > 200) {
+                GetLinePositions();
+                CreateLineRenderer(_inkPositions);
+            }
+            else SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopWritingWithoutSerializing));
+
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopWriting));
             _time = Networking.GetServerTimeInMilliseconds();
         }
@@ -105,16 +110,28 @@ namespace z3y
             _trailRenderer.emitting = false;
         }
 
+        public void GetLinePositions()
+        {
+            _trailRenderer.AddPosition(_trailRenderer.transform.position);
+            _inkPositions = new Vector3[_trailRenderer.positionCount];
+            _trailRenderer.GetPositions(_inkPositions);
+            Array.Reverse(_inkPositions);
+        }
+
+
+        public void StopWritingWithoutSerializing()
+        {
+            GetLinePositions();
+
+            HandleSerialization(_inkPositions);
+        }
+
         public void CreateLineRenderer(Vector3[] pos)
         {
-            if (pos.Length < 1000 && Networking.GetServerTimeInMilliseconds() - _time > 200)
-            {
-                Array.Reverse(pos);
-                penManager.linesArray = pos;
-                penManager.serverTime = Networking.GetServerTimeInMilliseconds();
-                penManager.RequestSerialization();
-                HandleSerialization(pos);
-            }
+            penManager.linesArray = pos;
+            penManager.serverTime = Networking.GetServerTimeInMilliseconds();
+            penManager.RequestSerialization();
+            HandleSerialization(pos);
         }
 
         public void HandleSerialization(Vector3[] pos)

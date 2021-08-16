@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: VCPensEraseAll
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 43fb9b81e5a004f4cbfe7bd3384fbe0d,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 5fdc3af2153f2cd41b958ec30b3e6bdf,
     type: 2}
   udonAssembly: 
   assemblyError: 
