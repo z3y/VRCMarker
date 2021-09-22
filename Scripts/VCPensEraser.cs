@@ -7,7 +7,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 
-namespace z3y
+namespace z3y.Pens
 {
 
     public class VCPensEraser : UdonSharpBehaviour

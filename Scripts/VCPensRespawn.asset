@@ -132,7 +132,7 @@ MonoBehaviour:
       Data: 9|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: z3y.VCPensPen[], Assembly-CSharp
+      Data: z3y.Pens.VCPensPen[], Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -195,7 +195,7 @@ MonoBehaviour:
       Data: 13|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: z3y.VCPensEraser[], Assembly-CSharp
+      Data: z3y.Pens.VCPensEraser[], Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 

@@ -63,7 +63,7 @@ MonoBehaviour:
       Data: 4|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: z3y.VCPensManager, Assembly-CSharp
+      Data: z3y.Pens.VCPensManager, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -132,7 +132,7 @@ MonoBehaviour:
       Data: 9|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: z3y.VCPensPen, Assembly-CSharp
+      Data: z3y.Pens.VCPensPen, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -189,7 +189,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: smoothTime
+      Data: _smoothTime
     - Name: $v
       Entry: 7
       Data: 12|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
@@ -216,10 +216,10 @@ MonoBehaviour:
       Data: SystemSingle
     - Name: symbolOriginalName
       Entry: 1
-      Data: smoothTime
+      Data: _smoothTime
     - Name: symbolUniqueName
       Entry: 1
-      Data: smoothTime
+      Data: _smoothTime
     - Name: symbolDefaultValue
       Entry: 6
       Data: 

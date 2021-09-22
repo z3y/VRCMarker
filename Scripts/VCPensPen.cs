@@ -7,12 +7,12 @@ using VRC.SDK3.Components;
 using VRC.SDKBase;
 using VRC.Udon.Common.Interfaces;
 
-namespace z3y
+namespace z3y.Pens
 {
+    [ExecuteInEditMode]
     public class VCPensPen : UdonSharpBehaviour
     {
-        [SerializeField] private TrailRenderer _trailRenderer;
-        [SerializeField] private Transform penMesh;
+        public TrailRenderer _trailRenderer;
         [SerializeField] private Transform lines;
         private Vector3[] _inkPositions;
         private MeshCollider _meshCollider;
@@ -29,14 +29,22 @@ namespace z3y
         private GameObject _newLine;
         [SerializeField] private LineRenderer lineRendererPrefab;
 
-        public void PenInit(Gradient inkColor, float inkWidth, float minVertexDistance)
+        private MaterialPropertyBlock _propertyBlock;
+        private Renderer _renderer;
+
+        private void Start()
         {
-            _trailRenderer.widthMultiplier = inkWidth;
-            _trailRenderer.colorGradient = inkColor;
-            _trailRenderer.minVertexDistance = minVertexDistance;
             _time = Networking.GetServerTimeInMilliseconds();
-            
-           _SetVertexColor();
+            SetColorPropertyBlock();
+        }
+
+        public void SetColorPropertyBlock()
+        {
+            Color penColor = _trailRenderer.colorGradient.Evaluate(0);
+            _renderer = GetComponent<Renderer>();
+            _propertyBlock = new MaterialPropertyBlock();
+            _propertyBlock.SetColor("_InkColor", penColor);
+            _renderer.SetPropertyBlock(_propertyBlock);
         }
 
         public override void OnPickup()
@@ -60,17 +68,7 @@ namespace z3y
 
         public void OnStartHolding() => isHeld = true;
         public void OnStopHolding() => isHeld = false;
-
-        private void _SetVertexColor()
-        {
-            Mesh mesh = penMesh.GetComponent<MeshFilter>().mesh;
-            Vector3[] vertices = mesh.vertices;
-            Vector3[] normals = mesh.normals;
-            Color[] colors = new Color[vertices.Length];
-            for (int i = 0; i < vertices.Length; i++) colors[i] = _trailRenderer.colorGradient.Evaluate((normals[i].x + 1) / 2);
-            mesh.colors = colors;
-        }
-
+        
         public override void OnPickupUseDown()
         {
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StartWriting));
@@ -139,9 +137,8 @@ namespace z3y
             _newLine.transform.SetParent(lines);
             _newLine.name = $"-ln{_lineNumber++}";
             var newLineRend = _newLine.GetComponent<LineRenderer>();
-
-            // if the line is just a dot dont use the whole gradient for the color
-            newLineRend.colorGradient = pos.Length > 1 ? _trailRenderer.colorGradient : penManager.dotColor;
+            
+            newLineRend.colorGradient = _trailRenderer.colorGradient;
 
             newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
             newLineRend.positionCount = pos.Length;

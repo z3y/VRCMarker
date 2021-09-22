@@ -6,34 +6,26 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 
-namespace z3y
+namespace z3y.Pens
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class VCPensManager : UdonSharpBehaviour
     {
-        [SerializeField] private VCPensPen pens;
+        public VCPensPen pens;
         
 
-        [Header("Pen Settings (Applied on Start)")]
-        public Gradient penColor;
-        [HideInInspector] public Gradient dotColor;
+        [Header("Pen Settings")]
+        [HideInInspector] public Color penColor = Color.white;
 
 
-        [Range(0.001f, 0.01f)] [SerializeField] private float inkWidth = 0.006f;
-        [Range(0.001f, 0.01f)] [SerializeField] private float minVertexDistance = 0.004f;
-
-        //[Header("Set to 0 to completely disable")]
-        [Range(0f, 0.2f)] [SerializeField] public float penSmoothing = 0.03f;
+        
+        
+        [Range(0f, 0.2f)] [SerializeField] public float penSmoothing = 0.04f;
 
 
         
         [UdonSynced, NonSerialized] public Vector3[] linesArray = new Vector3[0];
         [UdonSynced, NonSerialized] public int serverTime;
-
-        private void Start()
-        {
-            pens.PenInit(penColor, inkWidth, minVertexDistance);
-        }
-
 
         public override void OnDeserialization()
         {
@@ -45,5 +37,8 @@ namespace z3y
             pens.HandleSerialization(linesArray);
             pens.StopWriting();
         }
+
+        public void SetColors() => pens.SetColorPropertyBlock();
+        
     }
 }
