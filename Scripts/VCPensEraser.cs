@@ -15,6 +15,8 @@ namespace z3y.Pens
         private bool _isErasing;
         [SerializeField] private Material defaultMat;
         [SerializeField] private Material highlightMat;
+        
+
         private LineRenderer _lineRendererEnter;
         private LineRenderer _lineRendererExit;
 
@@ -24,6 +26,7 @@ namespace z3y.Pens
         {
             vrcObjectSync.Respawn();
         }
+
 
         public override void OnPickupUseDown() => SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StartErasing));
         public override void OnPickupUseUp() => SendCustomNetworkEvent(NetworkEventTarget.All, nameof(StopErasing));

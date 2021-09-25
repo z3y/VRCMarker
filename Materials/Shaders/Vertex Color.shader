@@ -1,8 +1,5 @@
 ﻿Shader "Unlit/Vertex Color"
 {
-    Properties
-    {
-    }
     SubShader
     {
         Tags

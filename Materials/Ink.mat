@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ink
-  m_Shader: {fileID: 4800000, guid: 2149d922664fb844d921e8ef02cbe74b, type: 3}
+  m_Shader: {fileID: 4800000, guid: c156f4f8667ade84590da1b1e4cea7eb, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -72,8 +72,10 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _Width: 0.004
+    - _Width: 0.005
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorTop: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _InkColor: {r: 1, g: 1, b: 1, a: 1}

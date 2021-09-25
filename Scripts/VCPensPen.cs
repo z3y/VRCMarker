@@ -30,18 +30,22 @@ namespace z3y.Pens
         [SerializeField] private LineRenderer lineRendererPrefab;
 
         private MaterialPropertyBlock _propertyBlock;
-        private Renderer _renderer;
+        [SerializeField] private Renderer _renderer;
+        
 
         private void Start()
         {
             _time = Networking.GetServerTimeInMilliseconds();
             SetColorPropertyBlock();
+#if !UNITY_ANDROID
+            _trailRenderer.widthMultiplier = 0;
+#endif
+            
         }
 
         public void SetColorPropertyBlock()
         {
             Color penColor = _trailRenderer.colorGradient.Evaluate(0);
-            _renderer = GetComponent<Renderer>();
             _propertyBlock = new MaterialPropertyBlock();
             _propertyBlock.SetColor("_InkColor", penColor);
             _renderer.SetPropertyBlock(_propertyBlock);
@@ -137,17 +141,26 @@ namespace z3y.Pens
             _newLine.transform.SetParent(lines);
             _newLine.name = $"-ln{_lineNumber++}";
             var newLineRend = _newLine.GetComponent<LineRenderer>();
-            
-            newLineRend.colorGradient = _trailRenderer.colorGradient;
 
-            newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
+            newLineRend.colorGradient = _trailRenderer.colorGradient;
+            
             newLineRend.positionCount = pos.Length;
             newLineRend.SetPositions(pos);
-
+#if UNITY_ANDROID         
+            newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
+#else
+            if (pos.Length < 3) newLineRend.numCapVertices = 1;
+            newLineRend.widthMultiplier = 0.005f;
+#endif
             var eraseCollider = new Mesh();
             newLineRend.BakeMesh(eraseCollider);
             _meshCollider = newLineRend.GetComponent<MeshCollider>();
             _meshCollider.sharedMesh = eraseCollider;
+#if !UNITY_ANDROID
+            newLineRend.numCapVertices = 0;
+            newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
+#endif
+            
         }
 
         public void Respawn()

@@ -11,11 +11,12 @@ namespace z3y.Pens
     public class PensEditor : Editor
     {
         private Color penColor = Color.white;
-        private float inkWidth = 0.006f;
+        private static float inkWidth = 0.006f;
         private float minVertexDistance = 0.004f;
+        bool firstTimeApply = true;
         public override void OnInspectorGUI()
         {
-            bool firstTimeApply = true;
+            
             EditorGUI.BeginChangeCheck();
             DrawDefaultInspector();
             EditorGUILayout.Space();
@@ -24,7 +25,7 @@ namespace z3y.Pens
             if (firstTimeApply)
             {
                 firstTimeApply = false;
-                inkWidth = pensManager.pens._trailRenderer.widthMultiplier;
+                //inkWidth = pensManager.pens._trailRenderer.widthMultiplier;
                 penColor = pensManager.pens._trailRenderer.colorGradient.Evaluate(0);
                 minVertexDistance = pensManager.pens._trailRenderer.minVertexDistance;
             }
@@ -48,6 +49,7 @@ namespace z3y.Pens
                 pensManager.pens._trailRenderer.widthMultiplier = inkWidth;
                 pensManager.pens._trailRenderer.colorGradient = gradient;
                 pensManager.pens._trailRenderer.minVertexDistance = minVertexDistance;
+                pensManager.pens._trailRenderer.sharedMaterial.SetFloat("_Width", inkWidth);
 
                 
             }

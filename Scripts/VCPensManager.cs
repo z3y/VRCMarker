@@ -33,6 +33,8 @@ namespace z3y.Pens
             {
                 return;
             }
+
+            if (Networking.LocalPlayer.IsOwner(pens.gameObject)) return;
             
             pens.HandleSerialization(linesArray);
             pens.StopWriting();
