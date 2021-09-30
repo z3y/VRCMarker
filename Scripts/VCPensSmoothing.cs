@@ -14,7 +14,11 @@ namespace z3y.Pens
 
         private float _smoothTime;
 
-        private void Start() {
+        [SerializeField] private Transform _inkPosition;
+
+
+        private void Start()
+        {
             _smoothTime = penManager.penSmoothing;
             if(_smoothTime == 0f)
             {
@@ -25,7 +29,7 @@ namespace z3y.Pens
 
         private void LateUpdate()
         {
-            if(pen.isHeld)transform.position = Vector3.Lerp(transform.position, pen.transform.position, Time.deltaTime / _smoothTime);
+            if(pen.isHeld) transform.position = Vector3.Lerp(transform.position, _inkPosition.transform.position, Time.deltaTime / _smoothTime);    
         }
     }
 }

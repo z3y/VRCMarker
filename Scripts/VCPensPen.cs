@@ -31,6 +31,9 @@ namespace z3y.Pens
 
         private MaterialPropertyBlock _propertyBlock;
         [SerializeField] private Renderer _renderer;
+
+        [SerializeField] private Transform _inkPosition;
+
         
 
         private void Start()
@@ -81,7 +84,7 @@ namespace z3y.Pens
 
         public void StartWriting()
         {
-            _trailRenderer.transform.position = transform.position;
+            _trailRenderer.transform.position = _inkPosition.transform.position;
             _trailRenderer.enabled = true;
             _isWriting = _trailRenderer.enabled;
             _trailRenderer.emitting = true;

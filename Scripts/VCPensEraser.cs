@@ -45,6 +45,8 @@ namespace z3y.Pens
 
         private void OnTriggerEnter(Collider other)
         {
+            if(other == null) return;
+            
             if (other.gameObject.layer == 9 && other.gameObject.name.Contains("-ln"))
             {
                 _lineRendererEnter = other.transform.gameObject.GetComponent<LineRenderer>();
@@ -56,12 +58,16 @@ namespace z3y.Pens
 
         private void OnTriggerStay(Collider other)
         {
+            if(other == null) return;
+
             if (_isErasing && other.gameObject.layer == 9 && other.gameObject.name.Contains("-ln"))
                 Destroy(other.transform.gameObject);
         }
 
         private void OnTriggerExit(Collider other)
         {
+            if(other == null) return;
+
             if (other.gameObject.layer == 9 && other.gameObject.name.StartsWith("-ln"))
             {
                 _lineRendererExit = other.transform.gameObject.GetComponent<LineRenderer>();

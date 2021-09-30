@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: VCPensRespawn
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: dd21bab2b150c9f4fb6f63de8ca7845e,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 77d09915c3e2b9d4fbc6f2dd1f989b5b,
     type: 2}
   udonAssembly: 
   assemblyError: 
