@@ -11,7 +11,7 @@ namespace z3y.Pens
     public class PensEditor : Editor
     {
         private Color penColor = Color.white;
-        private static float inkWidth = 0.006f;
+        private static float inkWidth = 0.004f;
         private float minVertexDistance = 0.004f;
         bool firstTimeApply = true;
         public override void OnInspectorGUI()
