@@ -47,7 +47,7 @@ namespace z3y.Pens
         {
             if(other == null) return;
             
-            if (other.gameObject.layer == 9 && other.gameObject.name.Contains("-ln"))
+            if (other.gameObject.layer == 13 && other.gameObject.name.Contains("-ln"))
             {
                 _lineRendererEnter = other.transform.gameObject.GetComponent<LineRenderer>();
                 _lineRendererEnter.material = highlightMat;
@@ -60,7 +60,7 @@ namespace z3y.Pens
         {
             if(other == null) return;
 
-            if (_isErasing && other.gameObject.layer == 9 && other.gameObject.name.Contains("-ln"))
+            if (_isErasing && other.gameObject.layer == 13 && other.gameObject.name.Contains("-ln"))
                 Destroy(other.transform.gameObject);
         }
 
@@ -68,7 +68,7 @@ namespace z3y.Pens
         {
             if(other == null) return;
 
-            if (other.gameObject.layer == 9 && other.gameObject.name.StartsWith("-ln"))
+            if (other.gameObject.layer == 13 && other.gameObject.name.StartsWith("-ln"))
             {
                 _lineRendererExit = other.transform.gameObject.GetComponent<LineRenderer>();
                 _lineRendererExit.material = defaultMat;
