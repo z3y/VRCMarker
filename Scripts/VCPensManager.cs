@@ -12,16 +12,9 @@ namespace z3y.Pens
     public class VCPensManager : UdonSharpBehaviour
     {
         public VCPensPen pens;
-        
 
         [Header("Pen Settings")]
-        [HideInInspector] public Color penColor = Color.white;
-
-
-        
-        
         [Range(0f, 0.2f)] [SerializeField] public float penSmoothing = 0.04f;
-
 
         
         [UdonSynced, NonSerialized] public Vector3[] linesArray = new Vector3[0];
@@ -40,7 +33,7 @@ namespace z3y.Pens
             pens.StopWriting();
         }
 
-        public void SetColors() => pens.SetColorPropertyBlock();
+        // public void SetColors() => pens.SetColorPropertyBlock();
         
     }
 }

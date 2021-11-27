@@ -9,7 +9,7 @@ using VRC.Udon.Common.Interfaces;
 
 namespace z3y.Pens
 {
-    [ExecuteInEditMode]
+
     public class VCPensPen : UdonSharpBehaviour
     {
         public TrailRenderer _trailRenderer;
@@ -33,8 +33,8 @@ namespace z3y.Pens
         [SerializeField] private Renderer _renderer;
 
         [SerializeField] private Transform _inkPosition;
-
         
+
 
         private void Start()
         {
@@ -153,7 +153,7 @@ namespace z3y.Pens
             newLineRend.widthMultiplier = _trailRenderer.widthMultiplier;
 #else
             if (pos.Length < 3) newLineRend.numCapVertices = 1;
-            newLineRend.widthMultiplier = 0.005f;
+            newLineRend.widthMultiplier = 0.003f;
 #endif
             var eraseCollider = new Mesh();
             newLineRend.BakeMesh(eraseCollider);
