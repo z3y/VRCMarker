@@ -1,5 +1,5 @@
 # Pens for VRChat
-### [Download](https://github.com/z3y/vertex-color-pens/archive/refs/heads/main.zip)
+### [Download](https://github.com/z3y/vertex-color-pens/releases)
 
 Using new udon networking manual sync, with only one ink material and a simple inspector. Pens can be duplicated as many times as you want without needing additional materials. Line positions are sent over the network so on both ends it should look exactly the same.
 
