@@ -5,8 +5,8 @@ Using new udon networking manual sync, with only one ink material and a simple i
 
 
 ### How to use:
-- Extract the file and place it anywhere in your project
-- Drag the Example.prefab in your scene
+- Import to unity
+- Drag the Pens Prefab in your scene
 - Adjust settings on each pen
 
 Requires [UdonSharp](https://github.com/MerlinVR/UdonSharp)
