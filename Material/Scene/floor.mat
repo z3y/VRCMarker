@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Marker
-  m_Shader: {fileID: 4800000, guid: 5f663610cc73b4f4ca8761c64e7659fe, type: 3}
-  m_ShaderKeywords: 
+  m_Name: floor
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -27,22 +27,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ColorMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _DFG:
         m_Texture: {fileID: 2800000, guid: f1abba94ba8e3b94bb5b81081239ca0d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Data:
-        m_Texture: {fileID: 2800000, guid: c4c5c5a43b346f5419ac399c3ff76b7d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Decal:
-        m_Texture: {fileID: 2800000, guid: 79f260df5ad29734294297439017832e, type: 3}
-        m_Scale: {x: 1.92, y: 6.82}
-        m_Offset: {x: -0.41, y: -1.21}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -61,13 +49,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 100, y: 100}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 557d5faf1374af845b09630d3bd089eb, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 0080deae3a566a54abc9ca40f038439b, type: 3}
+        m_Scale: {x: 1000, y: 1000}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -107,6 +99,7 @@ Material:
     - _DetailMap_UV: 0
     - _DetailMask_UV: 0
     - _DetailMetallic: 0
+    - _DetailNormalMapScale: 1
     - _DetailNormalScale: 1
     - _Dithering: 0
     - _DstBlend: 0
@@ -117,6 +110,7 @@ Material:
     - _EmissionToggle: 0
     - _ForceBoxProjection: 0
     - _GSAA: 0
+    - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _HeightBlend: 5
@@ -125,7 +119,7 @@ Material:
     - _LTCGI: 0
     - _LTCGI_DIFFUSE_OFF: 0
     - _LightmappedSpecular: 0
-    - _Metallic: 0
+    - _Metallic: 1
     - _Mode: 0
     - _NonLinearLightProbeSH: 0
     - _OcclusionStrength: 1
@@ -134,11 +128,12 @@ Material:
     - _ParallaxSteps: 16
     - _Reflectance: 0.5
     - _SSSToggle: 0
-    - _Saturation: 0
     - _SmoothnessAlbedoAlpha: 0
-    - _SpecularHighlights: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 0
     - _SpecularOcclusion: 0
     - _SrcBlend: 1
+    - _UVSec: 0
     - _UseEmissionIntensity: 0
     - _WindScale: 0.02
     - _WindSpeed: 0.05
@@ -147,7 +142,7 @@ Material:
     - _specularAntiAliasingThreshold: 0.1
     - _specularAntiAliasingVariance: 0.15
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColorLDR: {r: 1, g: 1, b: 1, a: 1}

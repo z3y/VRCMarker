@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Numerics;
+using System.Text;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.Timeline;
@@ -27,6 +28,8 @@ namespace VRCMarker
 
         private Vector3 _previousPosition;
         private Mesh _mesh;
+
+        private const string Version = "1";
 
         //when we get lists im rewriting this lol
         private Vector3[] _vertices = new Vector3[0];
@@ -56,7 +59,7 @@ namespace VRCMarker
 
         public bool isLocal = false;
 
-        void Start()
+        public void Start()
         {
 
             _mesh = new Mesh();
@@ -64,10 +67,12 @@ namespace VRCMarker
             _mesh.MarkDynamic();
             trailStorage.GetComponent<MeshFilter>().sharedMesh = _mesh;
 
+
             _trailing = new Mesh();
             _trailing.name = "Traling";
             _trailing.MarkDynamic();
             trailingMesh.sharedMesh = _trailing;
+            
 
             var propertyBlock = new MaterialPropertyBlock();
             propertyBlock.SetColor("_Color", color);
@@ -177,10 +182,10 @@ namespace VRCMarker
             _normals = new Vector3[VerticesReserved];
             _uv = new Vector2[VerticesReserved];
 
-            _mesh.vertices = _vertices;
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
             _mesh.SetUVs(0, _uv);
+            _mesh.vertices = _vertices;
 
             verticesUsed = 0;
             lastVerticesUsed = 0;

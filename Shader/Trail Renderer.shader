@@ -1,4 +1,4 @@
-Shader "Hidden/VRCMarker/Trail Renderer"
+Shader "Custom/VRCMarker/Trail Renderer"
 {
     Properties
     {

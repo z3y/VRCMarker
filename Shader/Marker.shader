@@ -1,4 +1,4 @@
-﻿Shader "Hidden/VRCMarker/Marker"
+﻿Shader "Custom/VRCMarker/Marker"
 {
     Properties
     {
