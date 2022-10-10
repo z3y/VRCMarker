@@ -140,7 +140,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 8055122443038525239}
   markerMesh: {fileID: 7723515609744305232}
-  markerTrail: {fileID: 1414984924803784699}
+  markerTrail: {fileID: 3968491154304474225}
   markerSync: {fileID: 7926863938251667743}
   erase: {fileID: 3049154557044589514}
 --- !u!114 &8055122443038525239
@@ -216,7 +216,7 @@ MonoBehaviour:
   ThrowVelocityBoostScale: 1
   currentlyHeldBy: {fileID: 0}
   pickupable: 1
-  proximity: 1
+  proximity: 0.25
 --- !u!65 &8511724296906650675
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1907624226987691128}
-  markerTrail: {fileID: 1414984924803784699}
+  markerTrail: {fileID: 3968491154304474225}
   markerPickup: {fileID: 8545239537778471198}
 --- !u!114 &1907624226987691128
 MonoBehaviour:
@@ -329,7 +329,7 @@ MonoBehaviour:
   interactTextPlacement: {fileID: 0}
   interactText: Clear
   interactTextGO: {fileID: 0}
-  proximity: 0.5
+  proximity: 0.25
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marker: {fileID: 247781027315986262}
-  markerTrail: {fileID: 1414984924803784699}
+  markerTrail: {fileID: 3968491154304474225}
   color: {r: 1, g: 1, b: 1, a: 0}
   width: 0.003
   smoothing: 0.67
@@ -484,8 +484,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4561873240379091643}
-  - component: {fileID: 1414984924803784699}
-  - component: {fileID: 5351806216235204333}
+  - component: {fileID: 3968491154304474225}
+  - component: {fileID: 7191321336371695368}
   m_Layer: 0
   m_Name: Trail Renderer
   m_TagString: Untagged
@@ -507,7 +507,7 @@ Transform:
   m_Father: {fileID: 2903118327533707875}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1414984924803784699
+--- !u!114 &3968491154304474225
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -516,7 +516,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6357700640741054161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48d4fadcc1f3ddc428511d4172a4e3ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b706dea83fd3164f8e36b2f99742d41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -528,8 +528,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _udonSharpBackingUdonBehaviour: {fileID: 5351806216235204333}
-  markerSync: {fileID: 7926863938251667743}
+  _udonSharpBackingUdonBehaviour: {fileID: 7191321336371695368}
   trailPosition: {fileID: 1403787091852531294}
   color: {r: 1, g: 1, b: 1, a: 0}
   minDistance: 0.002
@@ -537,15 +536,11 @@ MonoBehaviour:
   updateRate: 0.03
   smoothing: 0.67
   vertexLimit: 32000
-  verticesUsed: 0
-  lastVerticesUsed: 0
-  trianglesUsed: 0
-  lastTrianglesUsed: 0
   trailingMesh: {fileID: 4234739853357365345}
   trailStorage: {fileID: 9083297691627360494}
-  lastTrailPositions: []
   isLocal: 0
---- !u!114 &5351806216235204333
+  lastTrailPositions: []
+--- !u!114 &7191321336371695368
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -565,9 +560,9 @@ MonoBehaviour:
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
   _syncMethod: 1
-  serializedProgramAsset: {fileID: 11400000, guid: 8f61a954982ef204fa8c609b668c2dc2,
+  serializedProgramAsset: {fileID: 11400000, guid: d429f9812148ea74d86de9212fa8073e,
     type: 2}
-  programSource: {fileID: 11400000, guid: e55bf328615fc374f923fcf568a40840, type: 2}
+  programSource: {fileID: 11400000, guid: 38d09ad51181f624dbad7d1f7286f3ed, type: 2}
   serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
   publicVariablesUnityEngineObjects: []
   publicVariablesSerializationDataFormat: 0
@@ -702,10 +697,23 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: vector3a0
+      Entry: 7
+      Data: 0|UnityEngine.Vector3[], UnityEngine.CoreModule
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _udonSharpBackingUdonBehaviour: {fileID: 2675414647648267488}
-  markerTrail: {fileID: 1414984924803784699}
+  markerTrail: {fileID: 3968491154304474225}
   syncedLastTrailPoints: []
+  state: 0
 --- !u!114 &2675414647648267488
 MonoBehaviour:
   m_ObjectHideFlags: 0

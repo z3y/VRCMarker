@@ -12,42 +12,77 @@ namespace VRCMarker
         public MarkerTrail markerTrail;
 
         [UdonSynced] public Vector3[] syncedLastTrailPoints = new Vector3[0];
+        [UdonSynced] public int state = -1;
 
-        const int MaxSyncCount = 300;
+        public const int MaxSyncCount = 300;
 
-        private readonly Vector3[] vector3a0 = new Vector3[0];
+        private void Start()
+        {
+            state = -1;
+        }
+
+        public readonly Vector3[] vector3a0 = new Vector3[0];
         public override void OnDeserialization()
         {
-            markerTrail.enabled = false;
-           
+            switch(state)
+            {
+                case 0: // start writing
+                    if (markerTrail.enabled)
+                    {
+                        markerTrail.StopWriting();
+                        markerTrail.AddEndCap();
+                    }
+                    markerTrail.StartWriting();
+                    return;
+                case 1: // stop writing without sync
+                    markerTrail.StopWriting();
+                    markerTrail.AddEndCap();
+                    markerTrail.UpdateUsedVertices();
+                    return;
+                case 2: // stop writing with sync
+                    markerTrail.StopWriting();
+                    int length = syncedLastTrailPoints.Length;
+                    if (length >= 2)
+                    {
+                        markerTrail.CreateTrail(syncedLastTrailPoints);
+                    }
+                    else if (length == 1)
+                    {
+                        markerTrail.RevertUsedVertices();
+                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
+                        markerTrail.UpdateUsedVertices();
+                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]); // fix
+                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
+                        markerTrail.UpdateMeshData();
+                    }
+                    return;
+            }
         }
 
-        public void CreateMarkerTrail()
+        public void SyncMarker()
         {
-            if (syncedLastTrailPoints.Length < 2)
+            var syncLines = markerTrail.GetSyncLines();
+
+            if (!markerTrail.enabled && syncLines.Length < MaxSyncCount)
             {
-                markerTrail.AddEndLine();
-                return;
+                syncedLastTrailPoints = syncLines;
+                state = 2;
+            }
+            else
+            {
+                syncedLastTrailPoints = vector3a0;
+            }
+            if (syncLines.Length >= MaxSyncCount)
+            {
+                state = 1;
             }
 
-            markerTrail.verticesUsed = markerTrail.lastVerticesUsed;
-            markerTrail.trianglesUsed = markerTrail.lastTrianglesUsed;
-
-            markerTrail.CreateTrail(syncedLastTrailPoints);
-            syncedLastTrailPoints = vector3a0;
-        }
-
-        public void SendMarkerPositions()
-        {
-            if (markerTrail.lastTrailPositions.Length > MaxSyncCount)
-            {
-                markerTrail.lastTrailPositions = vector3a0;
-                return;
-            }
-            syncedLastTrailPoints = markerTrail.lastTrailPositions;
             RequestSerialization();
 
-            markerTrail.lastTrailPositions = vector3a0;
+            if (state != 0)
+            {
+                markerTrail.ResetSyncLines();
+            }
         }
 
     }

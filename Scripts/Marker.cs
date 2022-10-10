@@ -10,7 +10,6 @@ namespace VRCMarker
     [UdonBehaviourSyncMode(BehaviourSyncMode.Continuous)]
     public class Marker : UdonSharpBehaviour
     {
-        [Header("Only edit properties on the root marker object")]
         public MeshRenderer markerMesh;
         public MarkerTrail markerTrail;
         public MarkerSync markerSync;
@@ -23,18 +22,16 @@ namespace VRCMarker
 
         public override void OnPickupUseDown()
         {
-            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, nameof(EnableMarker));
+            markerTrail.StartWriting();
+            markerSync.state = 0;
+            markerSync.SyncMarker();
         }
 
         public override void OnPickupUseUp()
         {
-            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, nameof(DisableMarker));
-            markerSync.SendMarkerPositions();
+            markerTrail.StopWriting();
+            markerSync.SyncMarker();
         }
-
-
-        public void EnableMarker() => markerTrail.enabled = true;
-        public void DisableMarker() => markerTrail.enabled = false;
 
         public override void OnPickup()
         {
@@ -46,7 +43,10 @@ namespace VRCMarker
 
         public override void OnDrop()
         {
+            OnPickupUseUp();
+
             markerTrail.isLocal = false;
+            markerTrail.ResetSyncLines();
         }
 
         public void SetColor()

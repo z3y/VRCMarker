@@ -1,78 +1,64 @@
 ﻿
 using System;
-using System.Numerics;
-using System.Text;
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.Timeline;
 using VRC.SDKBase;
 using VRC.Udon;
-using Quaternion = UnityEngine.Quaternion;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
+
 
 namespace VRCMarker
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class MarkerTrail : UdonSharpBehaviour
     {
-        public MarkerSync markerSync;
         public Transform trailPosition;
-
         public Color color = Color.white;
         [Range(0.001f, 0.01f)] public float minDistance = 0.002f;
         [Range(0.001f, 0.01f)] public float width = 0.003f;
         [Range(0.02f, 0.2f)] public float updateRate = 0.03f;
         [Range(0f, 1f)] public float smoothing = 0.67f;
-        private float _smoothingCached;
+        private float _smoothingCached = 1;
 
-        private Vector3 _previousPosition;
-        private Mesh _mesh;
-
-        private const string Version = "1";
-
-        //when we get lists im rewriting this lol
         private Vector3[] _vertices = new Vector3[0];
         private int[] _triangles = new int[0];
         private Vector3[] _normals = new Vector3[0];
         private Vector2[] _uv = new Vector2[0];
-        public const int VertexIncrement = 7;
-        public const int TriangeIncrement = 9;
-        const int VerticesReserved = VertexIncrement * 126;
-        const int TrianglesReserved = TriangeIncrement * 126;
+
         public int vertexLimit = 32000;
-        [HideInInspector] public int verticesUsed = 0;
-        [HideInInspector] public int lastVerticesUsed = 0;
-        [HideInInspector] public int trianglesUsed = 0;
-        [HideInInspector] public int lastTrianglesUsed = 0;
+        private int _verticesUsed = 0;
+        private int _lastVerticesUsed = 0;
+        private int _trianglesUsed = 0;
+        private int _lastTrianglesUsed = 0;
 
-        private float _time = 0;
-
+        private Mesh _mesh;
         private Mesh _trailing;
         public MeshFilter trailingMesh;
         public MeshFilter trailStorage;
 
+        private float _time = 0;
+        private Vector3 _previousPosition = Vector3.zero;
         private Vector3 _previousSmoothingPosition = Vector3.zero;
         private Vector3 _smoothingPosition = Vector3.zero;
 
-        [HideInInspector] public Vector3[] lastTrailPositions;
+        public bool isLocal = true;
+        //[HideInInspector] public Vector3[] lastTrailPositions;
 
-        public bool isLocal = false;
+        private Vector3[] _syncLines = new Vector3[MarkerSync.MaxSyncCount];
+        private int _syncLinesUsed = 0;
 
-        public void Start()
+        private const string Version = "1";
+
+        private void Start()
         {
-
             _mesh = new Mesh();
             _mesh.name = "Trail";
             _mesh.MarkDynamic();
             trailStorage.GetComponent<MeshFilter>().sharedMesh = _mesh;
 
-
             _trailing = new Mesh();
             _trailing.name = "Traling";
             _trailing.MarkDynamic();
             trailingMesh.sharedMesh = _trailing;
-            
 
             var propertyBlock = new MaterialPropertyBlock();
             propertyBlock.SetColor("_Color", color);
@@ -80,25 +66,14 @@ namespace VRCMarker
             trailStorage.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
             trailingMesh.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
 
-            _vertices = new Vector3[VerticesReserved];
-            _triangles = new int[TrianglesReserved];
-            _normals = new Vector3[VerticesReserved];
-            _uv = new Vector2[VerticesReserved];
+            trailingMesh.gameObject.SetActive(false);
 
             ResetTRS(transform);
             ResetTRS(trailingMesh.transform);
             ResetTRS(trailStorage.transform);
 
-            _smoothingCached = smoothing;
-
             CreateTrailingLineConstants();
-
-            _smoothingPosition = trailPosition.position;
-            _previousSmoothingPosition = trailPosition.position;
-            _previousPosition = _smoothingPosition;
-
             enabled = false;
-            Clear();
         }
 
         private void Update()
@@ -111,87 +86,109 @@ namespace VRCMarker
 
             UpdateTrailingLine(_smoothingPosition, _previousPosition);
 
-            if (Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance ||
-                _time <= updateRate)
+            if (_time <= updateRate || !enabled || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance)
             {
                 return;
             }
 
-            AddLine(_previousPosition, _smoothingPosition);
-            StoreLineTransform(_previousPosition);
+            CreateTrailLine(_previousPosition, _smoothingPosition);
+            UpdateMeshData();
+            StoreLineTransform(_smoothingPosition);
 
             _previousPosition = _smoothingPosition;
             _time = 0;
         }
 
-        private void OnEnable()
+        public void StartWriting()
         {
+            if (enabled) return;
+
+            _time = 0;
             _smoothingCached = smoothing;
+            _lastVerticesUsed = _verticesUsed;
+            _lastTrianglesUsed = _trianglesUsed;
+
             _smoothingPosition = trailPosition.position;
             _previousSmoothingPosition = trailPosition.position;
             _previousPosition = trailPosition.position;
             trailingMesh.gameObject.SetActive(true);
-            StoreLineTransform(_smoothingPosition);
+            CreateTrailLine(trailPosition.position, trailPosition.position);
 
-            if (verticesUsed > 0)
-            {
-                UpdateTrailingLine(_smoothingPosition, _previousPosition);
-            }
+            UpdateTrailingLine(trailPosition.position, trailPosition.position);
+            StoreLineTransform(trailPosition.position);
+            UpdateMeshData();
+
+
+            enabled = true;
         }
 
-        private void OnDisable()
+        public void StopWriting()
         {
+            if (!enabled) return;
+            enabled = false;
+
             _time = 0;
-            trailingMesh.gameObject.SetActive(false);
             _smoothingCached = 1;
-            if (isLocal)
+            trailingMesh.gameObject.SetActive(false);
+
+
+            if (isLocal && GetSyncLines().Length > 1)
             {
-                StoreLineTransform(_previousPosition);
+                AddEndCap();
                 StoreLineTransform(_smoothingPosition);
-                AddLine(_previousPosition, _previousPosition);
-                AddLine(_smoothingPosition, _previousPosition);
-
-                _smoothingPosition = Vector3.zero;
-                _previousPosition = Vector3.zero;
-                _previousSmoothingPosition = Vector3.zero;
             }
-            
-            
-            if (!isLocal)
-            {
-                markerSync.CreateMarkerTrail();
-            }
-
-            lastVerticesUsed = verticesUsed;
-            lastTrianglesUsed = trianglesUsed;
         }
 
-        public void AddEndLine()
+        public void AddEndCap()
         {
-            AddLine(_previousPosition, _previousPosition);
-            AddLine(_smoothingPosition, _previousPosition);
-            lastVerticesUsed = verticesUsed;
-            lastTrianglesUsed = trianglesUsed;
+            CreateTrailLine(_previousPosition, _smoothingPosition);
+            CreateTrailLine(_smoothingPosition, _previousPosition);
+            UpdateMeshData();
+        }
+
+        public void UpdateMeshData()
+        {
+            _mesh.vertices = _vertices;
+            _mesh.triangles = _triangles;
+            _mesh.normals = _normals;
+            _mesh.SetUVs(0, _uv);
+            _mesh.RecalculateBounds();
+        }
+
+
+
+        public void CreateLines(Vector3[] position)
+        {
+            for (int i = 1; i < position.Length; i++)
+            {
+                CreateTrailLine(position[i - 1], position[i]);
+            }
+
+            _lastVerticesUsed = _verticesUsed;
+            _lastTrianglesUsed = _trianglesUsed;
+
+            CreateTrailLine(position[0], position[1]); // fix
+            UpdateMeshData();
         }
 
         public void Clear()
         {
             _time = 0;
-            _vertices = new Vector3[VerticesReserved];
-            _triangles = new int[TrianglesReserved];
-            _normals = new Vector3[VerticesReserved];
-            _uv = new Vector2[VerticesReserved];
+            _vertices = new Vector3[0];
+            _triangles = new int[0];
+            _normals = new Vector3[0];
+            _uv = new Vector2[0];
 
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
             _mesh.SetUVs(0, _uv);
             _mesh.vertices = _vertices;
 
-            verticesUsed = 0;
-            lastVerticesUsed = 0;
-            trianglesUsed = 0;
-            lastTrianglesUsed = 0;
-            lastTrailPositions = new Vector3[0];
+            _verticesUsed = 0;
+            _trianglesUsed = 0;
+            _lastVerticesUsed = 0;
+            _lastTrianglesUsed = 0;
+            ResetSyncLines();
         }
 
         private void CreateTrailingLineConstants()
@@ -257,28 +254,28 @@ namespace VRCMarker
             _trailing.SetUVs(0, uv);
         }
 
-        private void UpdateTrailingLine(Vector3 startPos, Vector3 endPos)
+        private void UpdateTrailingLine(Vector3 start, Vector3 end)
         {
             var vertices = new Vector3[10];
             // lines
-            vertices[0] = startPos;
-            vertices[1] = startPos;
-            vertices[2] = endPos;
-            vertices[3] = endPos;
+            vertices[0] = start;
+            vertices[1] = start;
+            vertices[2] = end;
+            vertices[3] = end;
             // connections
-            vertices[4] = startPos;
-            vertices[5] = startPos;
-            vertices[6] = startPos;
-            vertices[7] = endPos;
-            vertices[8] = endPos;
-            vertices[9] = endPos;
+            vertices[4] = start;
+            vertices[5] = start;
+            vertices[6] = start;
+            vertices[7] = end;
+            vertices[8] = end;
+            vertices[9] = end;
 
             var normals = new Vector3[10];
             // lines
-            normals[0] = endPos;
-            normals[1] = endPos;
-            normals[2] = startPos;
-            normals[3] = startPos;
+            normals[0] = end;
+            normals[1] = end;
+            normals[2] = start;
+            normals[3] = start;
             // connections
             //normals[4] = Vector3.zero;
             //normals[5] = Vector3.zero;
@@ -299,92 +296,99 @@ namespace VRCMarker
 
         public void CreateTrail(Vector3[] positions)
         {
+            RevertUsedVertices();
+
             for (int i = 1; i < positions.Length; i++)
             {
-                AddLine(positions[i-1], positions[i], false);
+                CreateTrailLine(positions[i - 1], positions[i]);
             }
-            AddLine(positions[positions.Length - 1], positions[positions.Length - 2], true);
-            lastVerticesUsed = verticesUsed;
-            lastTrianglesUsed = trianglesUsed;
+
+            CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
+
+            UpdateUsedVertices();
+
+            CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
+
+            UpdateMeshData();
         }
 
-        private void AddLine(Vector3 startPos, Vector3 endPos, bool updateMesh = true)
+        public void CreateTrailLine(Vector3 start, Vector3 end)
         {
-            if (verticesUsed + VertexIncrement > _vertices.Length)
-            {
-                if (verticesUsed > vertexLimit)
-                {
-                    trianglesUsed = 0;
-                    verticesUsed = 0;
-                }
-                else
-                {
-                    IncreaseMeshSize();
-                }
-            }
-
-            //int vOffset = _verticesUsed;
-            //int tOffset = _trianglesUsed;
-            //var vertices = new Vector3[7];
-            // lines
-            _vertices[0 + verticesUsed] = startPos;
-            _vertices[1 + verticesUsed] = startPos;
-            _vertices[2 + verticesUsed] = endPos;
-            _vertices[3 + verticesUsed] = endPos;
-            // connections
-            _vertices[4 + verticesUsed] = startPos;
-            _vertices[5 + verticesUsed] = startPos;
-            _vertices[6 + verticesUsed] = startPos;
-
-            //var triangles = new int[9];
-            // lines
-
-            _triangles[trianglesUsed + 0] = 0 + verticesUsed;
-            _triangles[trianglesUsed + 1] = 1 + verticesUsed;
-            _triangles[trianglesUsed + 2] = 2 + verticesUsed;
-            _triangles[trianglesUsed + 3] = 0 + verticesUsed;
-            _triangles[trianglesUsed + 4] = 2 + verticesUsed;
-            _triangles[trianglesUsed + 5] = 3 + verticesUsed;
-            // connections
-            _triangles[trianglesUsed + 6] = 6 + verticesUsed;
-            _triangles[trianglesUsed + 7] = 5 + verticesUsed;
-            _triangles[trianglesUsed + 8] = 4 + verticesUsed;
-
-            //var uv = new Vector2[7];
-            // lines
-            _uv[0 + verticesUsed] = _UV_0;
-            _uv[1 + verticesUsed] = _UV_1;
-            _uv[2 + verticesUsed] = _UV_2;
-            _uv[3 + verticesUsed] = _UV_3;
-            // connections
-            _uv[4 + verticesUsed] = _UV_4;
-            _uv[5 + verticesUsed] = _UV_5;
-            _uv[6 + verticesUsed] = _UV_6;
-
-            //var normals = new Vector3[7];
-            // lines
-            _normals[0 + verticesUsed] = endPos;
-            _normals[1 + verticesUsed] = endPos;
-            _normals[2 + verticesUsed] = startPos;
-            _normals[3 + verticesUsed] = startPos;
-            // connections
-            //normals[4] = Vector3.zero;
-            //normals[5] = Vector3.zero;
-            //normals[6] = Vector3.zero;
-
-            verticesUsed += VertexIncrement;
-            trianglesUsed += TriangeIncrement;
-
-            if (updateMesh)
-            {
-                _mesh.vertices = _vertices;
-                _mesh.triangles = _triangles;
-                _mesh.normals = _normals;
-                _mesh.SetUVs(0, _uv);
-                _mesh.RecalculateBounds();
-            }
-
+            AddLine(start, end);
+            AddTriangle(start);
         }
+
+        public void RevertUsedVertices()
+        {
+            _verticesUsed = _lastVerticesUsed;
+            _trianglesUsed = _lastTrianglesUsed;
+        }
+
+        public void UpdateUsedVertices()
+        {
+            _lastVerticesUsed = _verticesUsed;
+            _lastTrianglesUsed = _trianglesUsed;
+        }
+
+        private void AddTriangle(Vector3 position)
+        {
+            const int vertexIncrement = 3;
+            const int triangleIncrement = 3;
+            UpdateArraySize(vertexIncrement, triangleIncrement);
+
+            _vertices[0 + _verticesUsed] = position;
+            _vertices[1 + _verticesUsed] = position;
+            _vertices[2 + _verticesUsed] = position;
+
+            _triangles[_trianglesUsed + 0] = 2 + _verticesUsed;
+            _triangles[_trianglesUsed + 1] = 1 + _verticesUsed;
+            _triangles[_trianglesUsed + 2] = 0 + _verticesUsed;
+
+            _uv[0 + _verticesUsed] = _UV_4;
+            _uv[1 + _verticesUsed] = _UV_5;
+            _uv[2 + _verticesUsed] = _UV_6;
+
+            // normals[4] = Vector3.zero;
+            // normals[5] = Vector3.zero;
+            // normals[6] = Vector3.zero;
+
+            _verticesUsed += vertexIncrement;
+            _trianglesUsed += triangleIncrement;
+        }
+
+        private void AddLine(Vector3 start, Vector3 end)
+        {
+            const int vertexIncrement = 4;
+            const int triangleIncrement = 6;
+            UpdateArraySize(vertexIncrement, triangleIncrement);
+
+            _vertices[0 + _verticesUsed] = start;
+            _vertices[1 + _verticesUsed] = start;
+            _vertices[2 + _verticesUsed] = end;
+            _vertices[3 + _verticesUsed] = end;
+
+            _triangles[_trianglesUsed + 0] = 0 + _verticesUsed;
+            _triangles[_trianglesUsed + 1] = 1 + _verticesUsed;
+            _triangles[_trianglesUsed + 2] = 2 + _verticesUsed;
+            _triangles[_trianglesUsed + 3] = 0 + _verticesUsed;
+            _triangles[_trianglesUsed + 4] = 2 + _verticesUsed;
+            _triangles[_trianglesUsed + 5] = 3 + _verticesUsed;
+
+            _uv[0 + _verticesUsed] = _UV_0;
+            _uv[1 + _verticesUsed] = _UV_1;
+            _uv[2 + _verticesUsed] = _UV_2;
+            _uv[3 + _verticesUsed] = _UV_3;
+
+            _normals[0 + _verticesUsed] = end;
+            _normals[1 + _verticesUsed] = end;
+            _normals[2 + _verticesUsed] = start;
+            _normals[3 + _verticesUsed] = start;
+
+            _verticesUsed += vertexIncrement;
+            _trianglesUsed += triangleIncrement;
+        }
+
+
 
         private void StoreLineTransform(Vector3 position)
         {
@@ -393,29 +397,50 @@ namespace VRCMarker
                 return;
             }
 
-            var positions = new Vector3[lastTrailPositions.Length + 1];
-            Array.Copy(lastTrailPositions, positions, lastTrailPositions.Length);
-            positions[positions.Length - 1] = position;
-            lastTrailPositions = positions;
+            if (_syncLinesUsed > _syncLines.Length - 1)
+            {
+                return;
+            }
+            _syncLines[_syncLinesUsed] = position;
+            _syncLinesUsed++;
         }
 
-        private void IncreaseMeshSize()
+        public Vector3[] GetSyncLines()
         {
-            _vertices = ResizeArray(_vertices, VerticesReserved);
-            _triangles = ResizeArray(_triangles, TrianglesReserved);
-            _normals = ResizeArray(_normals, VerticesReserved);
-            _uv = ResizeArray(_uv, VerticesReserved);
+            var arr = new Vector3[_syncLinesUsed];
+            Array.Copy(_syncLines, arr, _syncLinesUsed);
+            return arr;
         }
 
-        private void ResetTRS(Transform transform)
+        public void ResetSyncLines()
         {
-            var parent = transform.parent;
-            transform.parent = null;
-            transform.localScale = Vector3.one;
-            transform.parent = parent;
+            _syncLinesUsed = 0;
+        }
 
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
+        private void UpdateArraySize(int verticesReserved, int trianglesReserved)
+        {
+            const int Multiplier = 100;
+            trianglesReserved *= Multiplier;
+            verticesReserved *= Multiplier;
+
+            int vCount = _verticesUsed + verticesReserved;
+            if (vCount > _vertices.Length)
+            {
+                if (vCount > vertexLimit)
+                {
+                    _verticesUsed = 0;
+                    _trianglesUsed = 0;
+                    return;
+                }
+                _vertices = ResizeArray(_vertices, verticesReserved);
+                _normals = ResizeArray(_normals, verticesReserved);
+                _uv = ResizeArray(_uv, verticesReserved);
+            }
+
+            if (_trianglesUsed + trianglesReserved > _triangles.Length)
+            {
+                _triangles = ResizeArray(_triangles, trianglesReserved);
+            }
         }
 
         private static T[] ResizeArray<T>(T[] sourceArray, int incrementSize)
@@ -425,5 +450,15 @@ namespace VRCMarker
             return newArray;
         }
 
+        private static void ResetTRS(Transform transform)
+        {
+            var parent = transform.parent;
+            transform.parent = null;
+            transform.localScale = Vector3.one;
+            transform.parent = parent;
+
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+        }
     }
 }
