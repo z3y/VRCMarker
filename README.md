@@ -13,9 +13,6 @@
 - Drag the Pen Prefabs in your scene
 - Adjust settings
 
-
-Note: Currently there's some smaller bugs with syncing.
-
 Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
 
 [Demo World](https://vrchat.com/home/world/wrld_df859907-113e-445b-9ec7-37c900c36c75)
