@@ -1,5 +1,4 @@
-﻿
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -51,7 +50,7 @@ namespace VRCMarker
                         markerTrail.RevertUsedVertices();
                         markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
                         markerTrail.UpdateUsedVertices();
-                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]); // fix
+                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]); // fix for drawing more lines than synced lines
                         markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
                         markerTrail.UpdateMeshData();
                     }

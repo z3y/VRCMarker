@@ -529,6 +529,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 7191321336371695368}
+  marker: {fileID: 247781027315986262}
   trailPosition: {fileID: 1403787091852531294}
   color: {r: 1, g: 1, b: 1, a: 0}
   minDistance: 0.002
@@ -539,7 +540,6 @@ MonoBehaviour:
   trailingMesh: {fileID: 4234739853357365345}
   trailStorage: {fileID: 9083297691627360494}
   isLocal: 0
-  lastTrailPositions: []
 --- !u!114 &7191321336371695368
 MonoBehaviour:
   m_ObjectHideFlags: 0

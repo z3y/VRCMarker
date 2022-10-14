@@ -1,6 +1,4 @@
-﻿
-using System;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -15,14 +13,23 @@ namespace VRCMarker
         public MarkerSync markerSync;
         public EraseAll erase;
 
+        private float cachedUpdateRate = 0;
+        const float RemoteUpdateRateMult = 2f; // fix for drawing more lines than synced lines
+
         void Start()
         {
+            cachedUpdateRate = markerTrail.updateRate;
+            markerTrail.updateRate = cachedUpdateRate * RemoteUpdateRateMult;
             SetColor();
         }
 
         public override void OnPickupUseDown()
         {
             markerTrail.StartWriting();
+        }
+
+        public void StartWritingRemote()
+        {
             markerSync.state = 0;
             markerSync.SyncMarker();
         }
@@ -35,6 +42,7 @@ namespace VRCMarker
 
         public override void OnPickup()
         {
+            markerTrail.updateRate = cachedUpdateRate;
             markerTrail.isLocal = true;
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             Networking.SetOwner(Networking.LocalPlayer, markerSync.gameObject);
@@ -44,7 +52,7 @@ namespace VRCMarker
         public override void OnDrop()
         {
             OnPickupUseUp();
-
+            markerTrail.updateRate = cachedUpdateRate * RemoteUpdateRateMult;
             markerTrail.isLocal = false;
             markerTrail.ResetSyncLines();
         }

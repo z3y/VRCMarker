@@ -1,16 +1,15 @@
-﻿
-using System;
+﻿using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
-
 
 namespace VRCMarker
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class MarkerTrail : UdonSharpBehaviour
     {
+        public Marker marker;
         public Transform trailPosition;
         public Color color = Color.white;
         [Range(0.001f, 0.01f)] public float minDistance = 0.002f;
@@ -94,6 +93,11 @@ namespace VRCMarker
             CreateTrailLine(_previousPosition, _smoothingPosition);
             UpdateMeshData();
             StoreLineTransform(_smoothingPosition);
+            if (_syncLinesUsed == 6)
+            {
+                // prevent wrong first lines from object sync
+                marker.StartWritingRemote();
+            }
 
             _previousPosition = _smoothingPosition;
             _time = 0;
@@ -307,17 +311,11 @@ namespace VRCMarker
 
             UpdateUsedVertices();
 
-            CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
+           // CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
 
             UpdateMeshData();
         }
-
-        public void CreateTrailLine(Vector3 start, Vector3 end)
-        {
-            AddLine(start, end);
-            AddTriangle(start);
-        }
-
+        
         public void RevertUsedVertices()
         {
             _verticesUsed = _lastVerticesUsed;
@@ -330,65 +328,74 @@ namespace VRCMarker
             _lastTrianglesUsed = _trianglesUsed;
         }
 
-        private void AddTriangle(Vector3 position)
+        public void CreateTrailLine(Vector3 start, Vector3 end)
         {
-            const int vertexIncrement = 3;
-            const int triangleIncrement = 3;
+            const int vertexIncrement = 7;
+            const int triangleIncrement = 9;
             UpdateArraySize(vertexIncrement, triangleIncrement);
 
-            _vertices[0 + _verticesUsed] = position;
-            _vertices[1 + _verticesUsed] = position;
-            _vertices[2 + _verticesUsed] = position;
+            int v0 = _verticesUsed;
+            int v1 = _verticesUsed + 1;
+            int v2 = _verticesUsed + 2;
+            int v3 = _verticesUsed + 3;
+            int v4 = _verticesUsed + 4;
+            int v5 = _verticesUsed + 5;
+            int v6 = _verticesUsed + 6;
 
-            _triangles[_trianglesUsed + 0] = 2 + _verticesUsed;
-            _triangles[_trianglesUsed + 1] = 1 + _verticesUsed;
-            _triangles[_trianglesUsed + 2] = 0 + _verticesUsed;
+            int t0 = _trianglesUsed;
+            int t1 = _trianglesUsed + 1;
+            int t2 = _trianglesUsed + 2;
+            int t3 = _trianglesUsed + 3;
+            int t4 = _trianglesUsed + 4;
+            int t5 = _trianglesUsed + 5;
+            int t6 = _trianglesUsed + 6;
+            int t7 = _trianglesUsed + 7;
+            int t8 = _trianglesUsed + 8;
 
-            _uv[0 + _verticesUsed] = _UV_4;
-            _uv[1 + _verticesUsed] = _UV_5;
-            _uv[2 + _verticesUsed] = _UV_6;
 
-            // normals[4] = Vector3.zero;
-            // normals[5] = Vector3.zero;
-            // normals[6] = Vector3.zero;
+            // line
+            _vertices[v0] = start;
+            _vertices[v1] = start;
+            _vertices[v2] = end;
+            _vertices[v3] = end;
+
+            _triangles[t0] = 0 + _verticesUsed;
+            _triangles[t1] = 1 + _verticesUsed;
+            _triangles[t2] = 2 + _verticesUsed;
+            _triangles[t3] = 0 + _verticesUsed;
+            _triangles[t4] = 2 + _verticesUsed;
+            _triangles[t5] = 3 + _verticesUsed;
+
+            _uv[v0] = _UV_0;
+            _uv[v1] = _UV_1;
+            _uv[v2] = _UV_2;
+            _uv[v3] = _UV_3;
+
+            _normals[v0] = end;
+            _normals[v1] = end;
+            _normals[v2] = start;
+            _normals[v3] = start;
+
+            // triangle
+            _vertices[v4] = start;
+            _vertices[v5] = start;
+            _vertices[v6] = start;
+
+            _triangles[t6] = v6;
+            _triangles[t7] = v5;
+            _triangles[t8] = v4;
+
+            _uv[v4] = _UV_4;
+            _uv[v5] = _UV_5;
+            _uv[v6] = _UV_6;
+
+            _normals[v4] = Vector3.zero;
+            _normals[v5] = Vector3.zero;
+            _normals[v6] = Vector3.zero;
 
             _verticesUsed += vertexIncrement;
             _trianglesUsed += triangleIncrement;
         }
-
-        private void AddLine(Vector3 start, Vector3 end)
-        {
-            const int vertexIncrement = 4;
-            const int triangleIncrement = 6;
-            UpdateArraySize(vertexIncrement, triangleIncrement);
-
-            _vertices[0 + _verticesUsed] = start;
-            _vertices[1 + _verticesUsed] = start;
-            _vertices[2 + _verticesUsed] = end;
-            _vertices[3 + _verticesUsed] = end;
-
-            _triangles[_trianglesUsed + 0] = 0 + _verticesUsed;
-            _triangles[_trianglesUsed + 1] = 1 + _verticesUsed;
-            _triangles[_trianglesUsed + 2] = 2 + _verticesUsed;
-            _triangles[_trianglesUsed + 3] = 0 + _verticesUsed;
-            _triangles[_trianglesUsed + 4] = 2 + _verticesUsed;
-            _triangles[_trianglesUsed + 5] = 3 + _verticesUsed;
-
-            _uv[0 + _verticesUsed] = _UV_0;
-            _uv[1 + _verticesUsed] = _UV_1;
-            _uv[2 + _verticesUsed] = _UV_2;
-            _uv[3 + _verticesUsed] = _UV_3;
-
-            _normals[0 + _verticesUsed] = end;
-            _normals[1 + _verticesUsed] = end;
-            _normals[2 + _verticesUsed] = start;
-            _normals[3 + _verticesUsed] = start;
-
-            _verticesUsed += vertexIncrement;
-            _trianglesUsed += triangleIncrement;
-        }
-
-
 
         private void StoreLineTransform(Vector3 position)
         {
