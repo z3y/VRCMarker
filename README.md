@@ -2,6 +2,8 @@
 ### [Download](https://github.com/z3y/VRCMarker/releases)
 
 ### Features
+- Custom Trail Renderer written in Udon, inspired by [Unity XR Line Renderer](https://github.com/Unity-Technologies/XRLineRenderer)
+- Very Optimized. No overhead while idle, 1 draw call
 - Rounded Trail on PC and Quest
 - Trail Sync
 - Trail Smoothing
