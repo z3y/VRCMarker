@@ -1,5 +1,3 @@
-# Pens for VRChat
-### [Download](https://github.com/z3y/VRCMarker/releases)
 
 ### Features
 - Custom Trail Renderer written in Udon, inspired by [Unity XR Line Renderer](https://github.com/Unity-Technologies/XRLineRenderer)
@@ -15,9 +13,11 @@
 - Drag the Pen Prefabs in your scene
 - Adjust settings
 
-Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
 
-[Demo World](https://vrchat.com/home/world/wrld_df859907-113e-445b-9ec7-37c900c36c75)
+[Download](https://github.com/z3y/VRCMarker/releases) | 
+[Demo](https://vrchat.com/home/world/wrld_df859907-113e-445b-9ec7-37c900c36c75)
+
+Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
 
 
 ![image](https://user-images.githubusercontent.com/33181641/194152223-e877ede1-6a6e-4a35-9223-a4a633e98c26.png)
