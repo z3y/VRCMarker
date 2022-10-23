@@ -9,8 +9,8 @@
 
 
 ### How to use
-- Import to unity
-- Drag the Pen Prefabs in your scene
+- Import into Unity
+- Drag the Marker Prefab in your scene
 - Adjust settings
 
 
@@ -23,6 +23,3 @@ Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
 ![image](https://user-images.githubusercontent.com/33181641/194152223-e877ede1-6a6e-4a35-9223-a4a633e98c26.png)
 
 ![image](https://user-images.githubusercontent.com/33181641/194152197-a5647001-c29e-4231-a2f4-bf7858d2079a.png)
-
-
-
