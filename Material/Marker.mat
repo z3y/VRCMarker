@@ -117,7 +117,7 @@ Material:
     - _EmissionToggle: 0
     - _ForceBoxProjection: 0
     - _GSAA: 0
-    - _Glossiness: 0.5
+    - _Glossiness: 1
     - _GlossyReflections: 1
     - _HeightBlend: 5
     - _HeightBlendInvert: 0

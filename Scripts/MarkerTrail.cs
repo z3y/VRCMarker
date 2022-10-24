@@ -12,10 +12,10 @@ namespace VRCMarker
         public Marker marker;
         public Transform trailPosition;
         public Color color = Color.white;
-        [Range(0.001f, 0.01f)] public float minDistance = 0.002f;
-        [Range(0.001f, 0.01f)] public float width = 0.003f;
-        [Range(0.02f, 0.2f)] public float updateRate = 0.03f;
-        [Range(0f, 1f)] public float smoothing = 0.67f;
+        public float minDistance = 0.002f;
+        public float width = 0.003f;
+        public float updateRate = 0.03f;
+        public float smoothing = 0.67f;
         private float _smoothingCached = 1;
 
         private Vector3[] _vertices = new Vector3[0];
@@ -40,7 +40,6 @@ namespace VRCMarker
         private Vector3 _smoothingPosition = Vector3.zero;
 
         public bool isLocal = true;
-        //[HideInInspector] public Vector3[] lastTrailPositions;
 
         private Vector3[] _syncLines = new Vector3[MarkerSync.MaxSyncCount];
         private int _syncLinesUsed = 0;
@@ -67,13 +66,14 @@ namespace VRCMarker
 
             trailingMesh.gameObject.SetActive(false);
 
-            ResetTRS(transform);
-            ResetTRS(trailingMesh.transform);
-            ResetTRS(trailStorage.transform);
+            ResetTransforms();
 
             CreateTrailingLineConstants();
             enabled = false;
         }
+
+
+        
 
         private void Update()
         {
@@ -92,7 +92,7 @@ namespace VRCMarker
 
             CreateTrailLine(_previousPosition, _smoothingPosition);
             UpdateMeshData();
-            StoreLineTransform(_smoothingPosition);
+            StoreLastLinesTransform(_smoothingPosition);
             if (_syncLinesUsed == 6)
             {
                 // prevent wrong first lines from object sync
@@ -112,14 +112,15 @@ namespace VRCMarker
             _lastVerticesUsed = _verticesUsed;
             _lastTrianglesUsed = _trianglesUsed;
 
-            _smoothingPosition = trailPosition.position;
-            _previousSmoothingPosition = trailPosition.position;
-            _previousPosition = trailPosition.position;
+            var position = trailPosition.position;
+            _smoothingPosition = position;
+            _previousSmoothingPosition = position;
+            _previousPosition = position;
             trailingMesh.gameObject.SetActive(true);
-            CreateTrailLine(trailPosition.position, trailPosition.position);
+            CreateTrailLine(position, position);
 
-            UpdateTrailingLine(trailPosition.position, trailPosition.position);
-            StoreLineTransform(trailPosition.position);
+            UpdateTrailingLine(position, position);
+            StoreLastLinesTransform(position);
             UpdateMeshData();
 
 
@@ -139,14 +140,14 @@ namespace VRCMarker
             if (isLocal && GetSyncLines().Length > 1)
             {
                 AddEndCap();
-                StoreLineTransform(_smoothingPosition);
+                StoreLastLinesTransform(_smoothingPosition);
             }
         }
 
         public void AddEndCap()
         {
             CreateTrailLine(_previousPosition, _smoothingPosition);
-            CreateTrailLine(_smoothingPosition, _previousPosition);
+            //CreateTrailLine(_smoothingPosition, _previousPosition); // mot needed anymore
             UpdateMeshData();
         }
 
@@ -157,22 +158,6 @@ namespace VRCMarker
             _mesh.normals = _normals;
             _mesh.SetUVs(0, _uv);
             _mesh.RecalculateBounds();
-        }
-
-
-
-        public void CreateLines(Vector3[] position)
-        {
-            for (int i = 1; i < position.Length; i++)
-            {
-                CreateTrailLine(position[i - 1], position[i]);
-            }
-
-            _lastVerticesUsed = _verticesUsed;
-            _lastTrianglesUsed = _trianglesUsed;
-
-            CreateTrailLine(position[0], position[1]); // fix
-            UpdateMeshData();
         }
 
         public void Clear()
@@ -302,16 +287,15 @@ namespace VRCMarker
         {
             RevertUsedVertices();
 
+            CreateTrailLine(positions[0], positions[0]);
+
             for (int i = 1; i < positions.Length; i++)
             {
                 CreateTrailLine(positions[i - 1], positions[i]);
             }
 
-            CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
 
             UpdateUsedVertices();
-
-           // CreateTrailLine(positions[positions.Length - 1], positions[positions.Length - 2]);
 
             UpdateMeshData();
         }
@@ -328,10 +312,11 @@ namespace VRCMarker
             _lastTrianglesUsed = _trianglesUsed;
         }
 
-        public void CreateTrailLine(Vector3 start, Vector3 end)
+        const int vertexIncrement = 7;
+        const int triangleIncrement = 9;
+        public void CreateTrailLine(Vector3 end, Vector3 start)
         {
-            const int vertexIncrement = 7;
-            const int triangleIncrement = 9;
+            
             UpdateArraySize(vertexIncrement, triangleIncrement);
 
             int v0 = _verticesUsed;
@@ -359,12 +344,12 @@ namespace VRCMarker
             _vertices[v2] = end;
             _vertices[v3] = end;
 
-            _triangles[t0] = 0 + _verticesUsed;
-            _triangles[t1] = 1 + _verticesUsed;
-            _triangles[t2] = 2 + _verticesUsed;
-            _triangles[t3] = 0 + _verticesUsed;
-            _triangles[t4] = 2 + _verticesUsed;
-            _triangles[t5] = 3 + _verticesUsed;
+            _triangles[t0] = v0;
+            _triangles[t1] = v1;
+            _triangles[t2] = v2;
+            _triangles[t3] = v0;
+            _triangles[t4] = v2;
+            _triangles[t5] = v3;
 
             _uv[v0] = _UV_0;
             _uv[v1] = _UV_1;
@@ -397,7 +382,7 @@ namespace VRCMarker
             _trianglesUsed += triangleIncrement;
         }
 
-        private void StoreLineTransform(Vector3 position)
+        private void StoreLastLinesTransform(Vector3 position)
         {
             if (!isLocal)
             {
@@ -411,6 +396,42 @@ namespace VRCMarker
             _syncLines[_syncLinesUsed] = position;
             _syncLinesUsed++;
         }
+ 
+        public bool UndoLastLines()
+        {
+            if (_verticesUsed == 0)
+            {
+                return false;
+            }
+
+
+            int newVertexCount = _verticesUsed - vertexIncrement;
+            for (int i = _verticesUsed; i >= newVertexCount; i--)
+            {
+                _vertices[i] = Vector3.zero;
+            }
+            _verticesUsed = newVertexCount;
+
+            return true;
+        }
+
+        public bool IsLastPositionEndOfLine()
+        {
+            if (_verticesUsed <= vertexIncrement)
+            {
+                return false;
+            }
+
+            Vector3 startPos = _vertices[_verticesUsed - 1];
+            Vector3 endPos = _vertices[_verticesUsed - 4];
+            return Equals(startPos, endPos);
+        }
+
+        public bool MarkerInitialized()
+        {
+            return _vertices.Length != 0 && _verticesUsed != 0;
+        }
+
 
         public Vector3[] GetSyncLines()
         {
@@ -426,9 +447,9 @@ namespace VRCMarker
 
         private void UpdateArraySize(int verticesReserved, int trianglesReserved)
         {
-            const int Multiplier = 100;
-            trianglesReserved *= Multiplier;
-            verticesReserved *= Multiplier;
+            const int multiplier = 100;
+            trianglesReserved *= multiplier;
+            verticesReserved *= multiplier;
 
             int vCount = _verticesUsed + verticesReserved;
             if (vCount > _vertices.Length)
@@ -455,6 +476,16 @@ namespace VRCMarker
             var newArray = new T[incrementSize + sourceArray.Length];
             Array.Copy(sourceArray, newArray, sourceArray.Length);
             return newArray;
+        }
+
+        /// <summary>
+        /// Fix culling and other issues caused by transforms not being at zero when moving the root after Start.
+        /// </summary>
+        public void ResetTransforms()
+        {
+            ResetTRS(transform);
+            ResetTRS(trailingMesh.transform);
+            ResetTRS(trailStorage.transform);
         }
 
         private static void ResetTRS(Transform transform)

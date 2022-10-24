@@ -1,0 +1,17 @@
+{
+    "name": "z3y.VRCMarker",
+    "references": [
+        "UdonSharp.Editor",
+        "UdonSharp.Runtime",
+        "UdonSharp.Lib"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

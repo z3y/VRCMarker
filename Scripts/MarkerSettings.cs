@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 namespace VRCMarker
 {
@@ -28,7 +27,7 @@ namespace VRCMarker
             UpdateMarkerSettings();
         }
 
-        public void UpdateMarkerSettings()
+        private void UpdateMarkerSettings()
         {
             if (marker is null || markerTrail is null)
             {

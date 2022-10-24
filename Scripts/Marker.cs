@@ -11,16 +11,25 @@ namespace VRCMarker
         public MeshRenderer markerMesh;
         public MarkerTrail markerTrail;
         public MarkerSync markerSync;
-        public EraseAll erase;
+        public EraseHandler erase;
 
-        private float cachedUpdateRate = 0;
-        const float RemoteUpdateRateMult = 2f; // fix for drawing more lines than synced lines
+        private float _cachedUpdateRate = 0;
+        private const float RemoteUpdateRateMult = 2f; // fix for drawing more lines than synced lines
 
-        void Start()
+        private void Start()
         {
-            cachedUpdateRate = markerTrail.updateRate;
-            markerTrail.updateRate = cachedUpdateRate * RemoteUpdateRateMult;
+            _cachedUpdateRate = markerTrail.updateRate;
+            markerTrail.updateRate = _cachedUpdateRate * RemoteUpdateRateMult;
             SetColor();
+
+            if (Networking.IsOwner(Networking.LocalPlayer, gameObject))
+            {
+                erase.DisableInteractive = false;
+            }
+            else
+            {
+                erase.DisableInteractive = true;
+            }
         }
 
         public override void OnPickupUseDown()
@@ -42,17 +51,30 @@ namespace VRCMarker
 
         public override void OnPickup()
         {
-            markerTrail.updateRate = cachedUpdateRate;
+            markerTrail.updateRate = _cachedUpdateRate;
             markerTrail.isLocal = true;
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             Networking.SetOwner(Networking.LocalPlayer, markerSync.gameObject);
             Networking.SetOwner(Networking.LocalPlayer, erase.gameObject);
         }
 
+
+        public override void OnOwnershipTransferred(VRCPlayerApi player)
+        {
+            if (Networking.LocalPlayer.Equals(player))
+            {
+                erase.DisableInteractive = false;
+            }
+            else
+            {
+                erase.DisableInteractive = true;
+            }
+        }
+
         public override void OnDrop()
         {
             OnPickupUseUp();
-            markerTrail.updateRate = cachedUpdateRate * RemoteUpdateRateMult;
+            markerTrail.updateRate = _cachedUpdateRate * RemoteUpdateRateMult;
             markerTrail.isLocal = false;
             markerTrail.ResetSyncLines();
         }

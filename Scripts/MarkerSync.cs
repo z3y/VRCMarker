@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿using System;
+using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -20,10 +21,10 @@ namespace VRCMarker
             state = -1;
         }
 
-        public readonly Vector3[] vector3a0 = new Vector3[0];
+        private readonly Vector3[] _vector3A0 = new Vector3[0];
         public override void OnDeserialization()
         {
-            switch(state)
+            switch (state)
             {
                 case 0: // start writing
                     if (markerTrail.enabled)
@@ -50,8 +51,6 @@ namespace VRCMarker
                         markerTrail.RevertUsedVertices();
                         markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
                         markerTrail.UpdateUsedVertices();
-                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]); // fix for drawing more lines than synced lines
-                        markerTrail.CreateTrailLine(syncedLastTrailPoints[0], syncedLastTrailPoints[0]);
                         markerTrail.UpdateMeshData();
                     }
                     return;
@@ -69,7 +68,7 @@ namespace VRCMarker
             }
             else
             {
-                syncedLastTrailPoints = vector3a0;
+                syncedLastTrailPoints = _vector3A0;
             }
             if (syncLines.Length >= MaxSyncCount)
             {
