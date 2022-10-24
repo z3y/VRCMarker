@@ -15,7 +15,7 @@ namespace VRCMarker
 
         public EraseUndo eraseUndo;
 
-        public const float HoldDelay = 0.1f;
+        public const float HoldDelay = 0.2f;
         private float _heldTime = 0;
         private float _lastTime = 0;
 
