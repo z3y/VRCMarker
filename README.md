@@ -9,7 +9,7 @@
 
 
 ### How to use
-- Import into Unity
+- Download the Unity Package and import into Unity, or add package from git url `https://github.com/z3y/VRCMarker.git`
 - Drag the Marker Prefab in your scene
 - Adjust settings
 
