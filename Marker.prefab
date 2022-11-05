@@ -205,8 +205,8 @@ MonoBehaviour:
   allowManipulationWhenEquipped: 0
   orientation: 0
   AutoHold: 1
-  InteractionText: 
-  UseText: Use
+  InteractionText: Marker
+  UseText: Write
   useEventBroadcastType: 0
   UseDownEventName: 
   UseUpEventName: 
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactTextPlacement: {fileID: 0}
-  interactText: Erase
+  interactText: Clear/Undo
   interactTextGO: {fileID: 0}
   proximity: 0.2
   SynchronizePosition: 0
