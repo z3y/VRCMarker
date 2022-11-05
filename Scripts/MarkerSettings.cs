@@ -51,6 +51,7 @@ namespace VRCMarker
         public void OnValidate()
         {
             Undo.RecordObject(markerTrail, "Marker Trail Settings Change");
+            EditorUtility.SetDirty(this);
         }
     }
 
