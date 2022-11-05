@@ -15,8 +15,13 @@ namespace VRCMarker
 
         [Header("Settings")]
         [ColorUsage(false, false)] public Color color = Color.white;
+        [Tooltip("Color multiplier to allow HDR values for trail emission")]
+        [Range(1f, 6f)] public float trailEmission = 1f;
+
         [Range(0.001f, 0.01f)] public float width = 0.003f;
         [Range(0f, 1f)] public float smoothing = 0.67f;
+        
+
 
         [Tooltip("Min time before new lines are added")][Range(0.02f, 0.2f)] public float updateRate = 0.03f;
         [Tooltip("Min distance before new lines are added")][Range(0.001f, 0.01f)] public float minDistance = 0.002f;
@@ -40,6 +45,7 @@ namespace VRCMarker
             markerTrail.updateRate = updateRate;
             markerTrail.minDistance = minDistance;
             markerTrail.vertexLimit = vertexLimit;
+            markerTrail.emission = trailEmission;
         }
 
         public void OnValidate()
