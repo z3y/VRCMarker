@@ -125,6 +125,7 @@ Material:
     - _LTCGI: 0
     - _LTCGI_DIFFUSE_OFF: 0
     - _LightmappedSpecular: 0
+    - _Ltcgi: 0
     - _Metallic: 0
     - _Mode: 0
     - _NonLinearLightProbeSH: 0
@@ -146,6 +147,7 @@ Material:
     - _ZWrite: 1
     - _specularAntiAliasingThreshold: 0.1
     - _specularAntiAliasingVariance: 0.15
+    - _toggle: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 1}

@@ -2,6 +2,7 @@
 {
     Properties
     {
+
         _Color ("Color", Color) = (1,1,1,1)
         [NoScaleOffset] _MainTex ("Desaturated Albedo (R), Color Mask B, Smoothness A", 2D) = "white" {}
 
@@ -10,15 +11,32 @@
         //[NoScaleOffset] _Data("Occlusion G, Color Mask B, Smoothness A", 2D) = "white" {}
         //_Glossiness ("Smoothness", Range(0,1)) = 0.5
         //_Saturation ("Saturation", Range(0,1)) = 0.5
+
+        [Space(10)]
+        [ToggleUI] _toggle ("LTCGI: To enable open the shader file", Float) = 0 // line 31
+
     }
+
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque" "LTCGI"="_LTCGI"}
         LOD 200
 
         CGPROGRAM
         #pragma surface surf Standard addshadow
         #pragma target 4.5
+
+        // shader feature was causing issues and didnt want to compile
+        // uncomment to enable LTCGI:
+        //#define LTCGI
+
+        #ifdef SHADER_API_MOBILE
+        #undef LTCGI
+        #endif
+
+        #ifdef LTCGI
+            #include "Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc"
+        #endif
 
         float GSAA(float3 worldNormal, float perceptualRoughness)
         {
@@ -45,10 +63,15 @@
             return sqrt(sqrt(squareRoughness));
         }
 
+
         struct Input
         {
             float2 uv_MainTex;
-            float3 worldNormal;
+            float3 worldNormal; INTERNAL_DATA
+            #ifdef LTCGI
+                float2 uv2_LightMap;
+                float3 worldPos;
+            #endif
         };
 
         sampler2D _MainTex;
@@ -63,6 +86,19 @@
         UNITY_INSTANCING_BUFFER_START(Props)
             UNITY_DEFINE_INSTANCED_PROP(half3, _Color)
         UNITY_INSTANCING_BUFFER_END(Props)
+
+        float3 get_camera_pos() {
+            float3 worldCam;
+            worldCam.x = unity_CameraToWorld[0][3];
+            worldCam.y = unity_CameraToWorld[1][3];
+            worldCam.z = unity_CameraToWorld[2][3];
+            return worldCam;
+        }
+
+        float3 F_Schlick(float u, float3 f0, float f90)
+        {
+            return f0 + (f90 - f0) * pow(1.0 - u, 5.0);
+        }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
@@ -80,8 +116,31 @@
 
             o.Albedo = albedo;
             o.Metallic = 0;
+            float rawSmoothness = dataTex.a;
             o.Smoothness = 1.0f - GSAA(IN.worldNormal, 1.0f - dataTex.a);
             o.Alpha = 1;
+
+            #ifdef LTCGI
+            {
+                float3 normal = WorldNormalVector(IN, o.Normal);
+                float3 spec = 0, diff = 0;
+                float3 viewDir = normalize(get_camera_pos() - IN.worldPos);
+                float NoV = saturate(dot(normal, viewDir));
+                float f0 = 0.16 * 0.5 * 0.5;
+                float fr = F_Schlick(NoV, f0, 1);
+                LTCGI_Contribution(
+                    IN.worldPos,
+                    normalize(normal),
+                    viewDir,
+                    1 - o.Smoothness,
+                    IN.uv2_LightMap,
+                    diff,
+                    spec
+                );
+                o.Emission += spec * fr * UNITY_PI * dataTex.a;
+                o.Emission += diff * o.Albedo;
+            }
+            #endif
         }
         ENDCG
     }

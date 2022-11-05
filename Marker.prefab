@@ -205,8 +205,8 @@ MonoBehaviour:
   allowManipulationWhenEquipped: 0
   orientation: 0
   AutoHold: 1
-  InteractionText: 
-  UseText: Use
+  InteractionText: Marker
+  UseText: Write
   useEventBroadcastType: 0
   UseDownEventName: 
   UseUpEventName: 
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactTextPlacement: {fileID: 0}
-  interactText: Erase
+  interactText: Clear/Undo
   interactTextGO: {fileID: 0}
   proximity: 0.2
   SynchronizePosition: 0
@@ -394,6 +394,7 @@ MonoBehaviour:
   marker: {fileID: 247781027315986262}
   markerTrail: {fileID: 3968491154304474225}
   color: {r: 1, g: 1, b: 1, a: 0}
+  trailEmission: 1
   width: 0.003
   smoothing: 0.67
   updateRate: 0.03
@@ -617,6 +618,7 @@ MonoBehaviour:
   marker: {fileID: 247781027315986262}
   trailPosition: {fileID: 1403787091852531294}
   color: {r: 1, g: 1, b: 1, a: 0}
+  emission: 1
   minDistance: 0.002
   width: 0.003
   updateRate: 0.03

@@ -12,6 +12,7 @@ namespace VRCMarker
         public Marker marker;
         public Transform trailPosition;
         public Color color = Color.white;
+        public float emission = 1f;
         public float minDistance = 0.002f;
         public float width = 0.003f;
         public float updateRate = 0.03f;
@@ -59,8 +60,15 @@ namespace VRCMarker
             trailingMesh.sharedMesh = _trailing;
 
             var propertyBlock = new MaterialPropertyBlock();
+
+#if UNITY_ANDROID
             propertyBlock.SetColor("_Color", color);
+#else
+            propertyBlock.SetColor("_Color", color * emission);
+#endif
+
             propertyBlock.SetFloat("_Scale", width);
+
             trailStorage.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
             trailingMesh.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
 
