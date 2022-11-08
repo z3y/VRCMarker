@@ -27,7 +27,7 @@ namespace VRCMarker
         [Tooltip("Min distance before new lines are added")][Range(0.001f, 0.01f)] public float minDistance = 0.002f;
         [Tooltip("Limit when trail will delete vertices in order they were drawn")] public int vertexLimit = 32000;
 
-        private void Update()
+        private void Start()
         {
             UpdateMarkerSettings();
         }
@@ -51,7 +51,8 @@ namespace VRCMarker
         public void OnValidate()
         {
             Undo.RecordObject(markerTrail, "Marker Trail Settings Change");
-            EditorUtility.SetDirty(this);
+            Undo.RecordObject(this, "Marker Trail Settings Change");
+            UpdateMarkerSettings();
         }
     }
 
@@ -61,16 +62,12 @@ namespace VRCMarker
 
         public override void OnInspectorGUI()
         {
-
-
             base.OnInspectorGUI();
             var markerSettings = (MarkerSettings)target;
             if (GUILayout.Button("Randomize Color"))
             {
-                markerSettings.color = Random.ColorHSV();
                 markerSettings.OnValidate();
-                Undo.RecordObject(markerSettings, "Marker Color Randomized");
-                EditorUtility.SetDirty(markerSettings);
+                markerSettings.color = Random.ColorHSV();
             }
         }
     }

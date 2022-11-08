@@ -22,7 +22,7 @@ namespace VRCMarker
 
         private void Start()
         {
-            _updateRate = markerTrail.updateRate;
+            _updateRate = markerTrail.updateRate / 2f;
             _updateRateCached = _updateRate;
             enabled = false;
         }
