@@ -135,7 +135,7 @@ Material:
     - _ParallaxSteps: 16
     - _Reflectance: 0.5
     - _SSSToggle: 0
-    - _Saturation: 0
+    - _Saturation: 0.5
     - _SmoothnessAlbedoAlpha: 0
     - _SpecularHighlights: 1
     - _SpecularOcclusion: 0

@@ -10,7 +10,7 @@
 
         //[NoScaleOffset] _Data("Occlusion G, Color Mask B, Smoothness A", 2D) = "white" {}
         //_Glossiness ("Smoothness", Range(0,1)) = 0.5
-        //_Saturation ("Saturation", Range(0,1)) = 0.5
+        _AccentSaturation ("Saturation", Range(0,1)) = 0.8
 
         [Space(10)]
         [ToggleUI] _toggle ("LTCGI: To enable open the shader file", Float) = 0 // line 31
@@ -77,6 +77,7 @@
         sampler2D _MainTex;
         sampler2D _Decal;
         float4 _Decal_ST;
+        half _AccentSaturation;
         //SamplerState sampler_MainTex;
         //SamplerState sampler_MetallicGlossMap;
 
@@ -107,9 +108,10 @@
 
             half3 color = UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
             half3 albedo = dataTex.r;
-            half3 colorMask = dataTex.b * color;
+            half3 colorMask = dataTex.b;
 
-            half desaturatedColor = dot(color, float3(0.2125, 0.7154, 0.0721));
+            half grayscale = dot(color, float3(0.2125, 0.7154, 0.0721));
+            half3 desaturatedColor = lerp(grayscale, color, _AccentSaturation);
             albedo = lerp(albedo, desaturatedColor, colorMask);
 
             albedo = lerp(albedo, decal.rgb, decal.a);
