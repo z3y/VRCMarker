@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -55,7 +56,7 @@ namespace VRCMarker
             trailStorage.GetComponent<MeshFilter>().sharedMesh = _mesh;
 
             _trailing = new Mesh();
-            _trailing.name = "Traling";
+            _trailing.name = "Trailing";
             _trailing.MarkDynamic();
             trailingMesh.sharedMesh = _trailing;
 
@@ -320,12 +321,12 @@ namespace VRCMarker
             _lastTrianglesUsed = _trianglesUsed;
         }
 
-        const int vertexIncrement = 7;
-        const int triangleIncrement = 9;
+        private const int VertexIncrement = 7;
+        private const int TriangleIncrement = 9;
         public void CreateTrailLine(Vector3 end, Vector3 start)
         {
             
-            UpdateArraySize(vertexIncrement, triangleIncrement);
+            UpdateArraySize(VertexIncrement, TriangleIncrement);
 
             int v0 = _verticesUsed;
             int v1 = _verticesUsed + 1;
@@ -386,8 +387,8 @@ namespace VRCMarker
             _normals[v5] = Vector3.zero;
             _normals[v6] = Vector3.zero;
 
-            _verticesUsed += vertexIncrement;
-            _trianglesUsed += triangleIncrement;
+            _verticesUsed += VertexIncrement;
+            _trianglesUsed += TriangleIncrement;
         }
 
         private void StoreLastLinesTransform(Vector3 position)
@@ -413,7 +414,7 @@ namespace VRCMarker
             }
 
 
-            int newVertexCount = _verticesUsed - vertexIncrement;
+            int newVertexCount = _verticesUsed - VertexIncrement;
             for (int i = _verticesUsed; i >= newVertexCount; i--)
             {
                 _vertices[i] = Vector3.zero;
@@ -425,7 +426,7 @@ namespace VRCMarker
 
         public bool IsLastPositionEndOfLine()
         {
-            if (_verticesUsed <= vertexIncrement)
+            if (_verticesUsed <= VertexIncrement)
             {
                 return false;
             }
@@ -489,6 +490,7 @@ namespace VRCMarker
         /// <summary>
         /// Fix culling and other issues caused by transforms not being at zero when moving the root after Start.
         /// </summary>
+        [PublicAPI]
         public void ResetTransforms()
         {
             ResetTRS(transform);
@@ -503,8 +505,7 @@ namespace VRCMarker
             transform.localScale = Vector3.one;
             transform.parent = parent;
 
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
+            transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
     }
 }

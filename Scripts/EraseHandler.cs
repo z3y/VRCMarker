@@ -21,8 +21,6 @@ namespace VRCMarker
 
         private bool _interactDown = false;
 
-        private bool _isHeldDown = false;
-
         public override void Interact()
         {
             if (markerPickup.IsHeld && !Networking.IsOwner(Networking.LocalPlayer, markerPickup.gameObject))
