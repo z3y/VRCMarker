@@ -32,7 +32,7 @@ namespace VRCMarker
             UpdateMarkerSettings();
         }
 
-        private void UpdateMarkerSettings()
+        public void UpdateMarkerSettings()
         {
             if (marker is null || markerTrail is null)
             {
@@ -68,6 +68,7 @@ namespace VRCMarker
             {
                 markerSettings.OnValidate();
                 markerSettings.color = Random.ColorHSV();
+                markerSettings.UpdateMarkerSettings();
             }
         }
     }
