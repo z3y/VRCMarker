@@ -17,8 +17,15 @@ namespace VRCMarker
 
         const float HoldDelay = 0.3f;
 
+        const string InteractText = "Click - Undo\nHold - Erase All";
+
         [UdonSynced] public Vector3 lastRemotePosition = Vector3.zero;
         [UdonSynced] public int eraseCount = 0;
+
+        private void Start()
+        {
+            InteractionText = InteractText;
+        }
 
         public override void Interact()
         {
