@@ -6,7 +6,7 @@
 - Trail Sync
 - Trail Smoothing
 - Vertex Limit
-- Undo by holding erase
+- Undo
 - Trail Emission
 - LTCGI
 
