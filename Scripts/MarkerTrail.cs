@@ -448,7 +448,7 @@ namespace VRCMarker
 
         private void RemoveLastLine()
         {
-            if (_verticesUsed == 0)
+            if (_verticesUsed == 0 || !MarkerInitialized())
             {
                 return;
             }
@@ -464,10 +464,24 @@ namespace VRCMarker
 
         public void RemoveLastLines(int lines)
         {
-            for (int i = 0; i < lines; i++)
+            if (_verticesUsed == 0 || !MarkerInitialized())
             {
-                RemoveLastLine();
+                return;
             }
+            int newVertexCount = _verticesUsed - lines;
+            if (newVertexCount < 0)
+            {
+                return;
+            }
+
+            for (int i = _verticesUsed; i >= newVertexCount; i--)
+            {
+                _vertices[i] = Vector3.zero;
+            }
+
+            _verticesUsed = newVertexCount;
+
+            UpdateMeshData();
         }
 
         public bool IsLastPositionEndOfLine()
