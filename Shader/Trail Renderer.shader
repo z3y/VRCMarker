@@ -87,7 +87,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 v2f o;
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
 
-
+                float3 vertexPos = v.vertex.xyz;
                 bool isLine = any(abs(v.otherPos));
 
                 UNITY_BRANCH
@@ -119,6 +119,11 @@ Shader "Custom/VRCMarker/Trail Renderer"
                     float3 triangleVertex = float3(v.vertex.xy + triangleOffset, v.vertex.z);
                     v.vertex.xyz = billboardTriangle(triangleVertex, v.vertex.xyz);
                     o.vertex = mul(UNITY_MATRIX_VP, v.vertex);
+                }
+
+                if (all(vertexPos) == 0)
+                {
+                    o.vertex = 0;
                 }
 
                 //o.vertex = UnityObjectToClipPos(v.vertex);
