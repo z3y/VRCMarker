@@ -405,14 +405,53 @@ namespace VRCMarker
             _syncLines[_syncLinesUsed] = position;
             _syncLinesUsed++;
         }
- 
-        public bool UndoLastLines()
+
+        public Vector3 GetLastLinePosition()
         {
             if (_verticesUsed == 0)
             {
-                return false;
+                return Vector3.zero;
             }
 
+            return _vertices[_verticesUsed];
+        }
+ 
+        public int RemoveLastLineConnection()
+        {
+            if (_verticesUsed == 0)
+            {
+                return 0;
+            }
+            int breakCount = _verticesUsed - 500;
+            int count = _verticesUsed;
+
+
+            RemoveLastLine();
+            if (!IsLastPositionEndOfLine())
+            {
+                for (int i = count - 1; i >= breakCount && _verticesUsed > 0; i--)
+                {
+                    RemoveLastLine();
+                    if (IsLastPositionEndOfLine())
+                    {
+                        RemoveLastLine();
+                        break;
+                    }
+                }
+            }
+
+
+            UpdateMeshData();
+
+            return count - _verticesUsed;
+        }
+
+        private void RemoveLastLine()
+        {
+            if (_verticesUsed == 0 || !MarkerInitialized())
+            {
+                return;
+            }
 
             int newVertexCount = _verticesUsed - VertexIncrement;
             for (int i = _verticesUsed; i >= newVertexCount; i--)
@@ -421,7 +460,28 @@ namespace VRCMarker
             }
             _verticesUsed = newVertexCount;
 
-            return true;
+        }
+
+        public void RemoveLastLines(int lines)
+        {
+            if (_verticesUsed == 0 || !MarkerInitialized())
+            {
+                return;
+            }
+            int newVertexCount = _verticesUsed - lines;
+            if (newVertexCount < 0)
+            {
+                return;
+            }
+
+            for (int i = _verticesUsed; i >= newVertexCount; i--)
+            {
+                _vertices[i] = Vector3.zero;
+            }
+
+            _verticesUsed = newVertexCount;
+
+            UpdateMeshData();
         }
 
         public bool IsLastPositionEndOfLine()

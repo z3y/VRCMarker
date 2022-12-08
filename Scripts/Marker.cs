@@ -11,7 +11,7 @@ namespace VRCMarker
         public MeshRenderer markerMesh;
         public MarkerTrail markerTrail;
         public MarkerSync markerSync;
-        public EraseHandler erase;
+        public Erase erase;
 
         private float _cachedUpdateRate = 0;
         private const float RemoteUpdateRateMult = 2f; // fix for drawing more lines than synced lines
