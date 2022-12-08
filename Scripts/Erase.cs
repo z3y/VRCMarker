@@ -7,7 +7,7 @@ using VRC.Udon.Common;
 
 namespace VRCMarker
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class Erase : UdonSharpBehaviour
     {
         public MarkerTrail markerTrail;
@@ -16,6 +16,9 @@ namespace VRCMarker
         private bool _interactDown;
 
         const float HoldDelay = 0.3f;
+
+        [UdonSynced] public Vector3 lastRemotePosition = Vector3.zero;
+        [UdonSynced] public int eraseCount = 0;
 
         public override void Interact()
         {
@@ -38,7 +41,7 @@ namespace VRCMarker
 
             if (heldTime < HoldDelay)
             {
-                UndoNetworked();
+                Undo();
             }
             else
             {
@@ -52,14 +55,23 @@ namespace VRCMarker
             markerTrail.Clear();
         }
 
-        public void UndoNetworked() => SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, nameof(Undo));
         public void Undo()
         {
             // first check if trail was synced, if the last position locally matches the remote one
 
             int length = markerTrail.RemoveLastLineConnection();
-            Debug.Log(length);
+            eraseCount = length;
+            lastRemotePosition = markerTrail.GetLastLinePosition();
+            RequestSerialization();
+        }
 
+        public override void OnDeserialization()
+        {
+            var lastPositionLocal = markerTrail.GetLastLinePosition();
+            if (Equals(lastPositionLocal, lastRemotePosition))
+            {
+                markerTrail.RemoveLastLines(eraseCount);
+            }
         }
     }
 }

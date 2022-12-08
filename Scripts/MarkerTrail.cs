@@ -405,6 +405,16 @@ namespace VRCMarker
             _syncLines[_syncLinesUsed] = position;
             _syncLinesUsed++;
         }
+
+        public Vector3 GetLastLinePosition()
+        {
+            if (_verticesUsed == 0)
+            {
+                return Vector3.zero;
+            }
+
+            return _vertices[_verticesUsed];
+        }
  
         public int RemoveLastLineConnection()
         {
@@ -450,7 +460,14 @@ namespace VRCMarker
             }
             _verticesUsed = newVertexCount;
 
-            return;
+        }
+
+        public void RemoveLastLines(int lines)
+        {
+            for (int i = 0; i < lines; i++)
+            {
+                RemoveLastLine();
+            }
         }
 
         public bool IsLastPositionEndOfLine()
