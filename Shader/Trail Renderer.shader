@@ -31,6 +31,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
             #pragma fragment frag
             #pragma target 4.5
 
+
             #include "UnityCG.cginc"
 
             struct appdata
@@ -123,7 +124,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                 if (all(vertexPos) == 0)
                 {
-                    o.vertex = 0;
+                    o.vertex = 0.0 / 0.0;
                 }
 
                 //o.vertex = UnityObjectToClipPos(v.vertex);

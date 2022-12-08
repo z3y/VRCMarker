@@ -406,13 +406,42 @@ namespace VRCMarker
             _syncLinesUsed++;
         }
  
-        public bool UndoLastLines()
+        public int RemoveLastLineConnection()
         {
             if (_verticesUsed == 0)
             {
-                return false;
+                return 0;
+            }
+            int breakCount = _verticesUsed - 500;
+            int count = _verticesUsed;
+
+
+            RemoveLastLine();
+            if (!IsLastPositionEndOfLine())
+            {
+                for (int i = count - 1; i >= breakCount && _verticesUsed > 0; i--)
+                {
+                    RemoveLastLine();
+                    if (IsLastPositionEndOfLine())
+                    {
+                        RemoveLastLine();
+                        break;
+                    }
+                }
             }
 
+
+            UpdateMeshData();
+
+            return count - _verticesUsed;
+        }
+
+        private void RemoveLastLine()
+        {
+            if (_verticesUsed == 0)
+            {
+                return;
+            }
 
             int newVertexCount = _verticesUsed - VertexIncrement;
             for (int i = _verticesUsed; i >= newVertexCount; i--)
@@ -421,7 +450,7 @@ namespace VRCMarker
             }
             _verticesUsed = newVertexCount;
 
-            return true;
+            return;
         }
 
         public bool IsLastPositionEndOfLine()
