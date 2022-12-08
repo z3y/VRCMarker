@@ -57,7 +57,6 @@ namespace VRCMarker
 
         public void Undo()
         {
-            // first check if trail was synced, if the last position locally matches the remote one
 
             int length = markerTrail.RemoveLastLineConnection();
             eraseCount = length;
@@ -67,6 +66,8 @@ namespace VRCMarker
 
         public override void OnDeserialization()
         {
+            // check if trail was synced, if the last position locally matches the remote one
+
             var lastPositionLocal = markerTrail.GetLastLinePosition();
             if (Equals(lastPositionLocal, lastRemotePosition))
             {
