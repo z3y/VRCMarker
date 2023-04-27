@@ -23,7 +23,7 @@ namespace VRCMarker
         private Vector3[] _vertices = new Vector3[0];
         private int[] _triangles = new int[0];
         private Vector3[] _normals = new Vector3[0];
-        private Vector2[] _uv = new Vector2[0];
+        //private Vector2[] _uv = new Vector2[0];
 
         public int vertexLimit = 32000;
         private int _verticesUsed = 0;
@@ -45,8 +45,6 @@ namespace VRCMarker
 
         private Vector3[] _syncLines = new Vector3[MarkerSync.MaxSyncCount];
         private int _syncLinesUsed = 0;
-
-        private const string Version = "1";
 
         private void Start()
         {
@@ -165,7 +163,7 @@ namespace VRCMarker
             _mesh.vertices = _vertices;
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
-            _mesh.SetUVs(0, _uv);
+            //_mesh.SetUVs(0, _uv);
             _mesh.RecalculateBounds();
         }
 
@@ -175,11 +173,11 @@ namespace VRCMarker
             _vertices = new Vector3[0];
             _triangles = new int[0];
             _normals = new Vector3[0];
-            _uv = new Vector2[0];
+            //_uv = new Vector2[0];
 
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
-            _mesh.SetUVs(0, _uv);
+            //_mesh.SetUVs(0, _uv);
             _mesh.vertices = _vertices;
 
             _verticesUsed = 0;
@@ -221,9 +219,9 @@ namespace VRCMarker
             triangles[10] = 8;
             triangles[11] = 7;
 
-            var uv = new Vector2[10];
+            //var uv = new Vector2[10];
             // lines
-            uv[0] = _UV_0;
+/*            uv[0] = _UV_0;
             uv[1] = _UV_1;
             uv[2] = _UV_2;
             uv[3] = _UV_3;
@@ -233,7 +231,7 @@ namespace VRCMarker
             uv[6] = _UV_6;
             uv[7] = _UV_4;
             uv[8] = _UV_5;
-            uv[9] = _UV_6;
+            uv[9] = _UV_6;*/
 
             var normals = new Vector3[10];
             // lines
@@ -249,7 +247,7 @@ namespace VRCMarker
             _trailing.vertices = vertices;
             _trailing.triangles = triangles;
             _trailing.normals = normals;
-            _trailing.SetUVs(0, uv);
+            //_trailing.SetUVs(0, uv);
         }
 
         private void UpdateTrailingLine(Vector3 start, Vector3 end)
@@ -284,6 +282,8 @@ namespace VRCMarker
             _trailing.RecalculateBounds();
         }
 
+/*
+        // moved to the shader 
         private readonly Vector2 _UV_0 = new Vector2(0, 0);
         private readonly Vector2 _UV_1 = new Vector2(0, 1);
         private readonly Vector2 _UV_2 = new Vector2(1, 1);
@@ -291,6 +291,7 @@ namespace VRCMarker
         private readonly Vector2 _UV_4 = new Vector2(-0.077350269189625764509148780501f, 0);
         private readonly Vector2 _UV_5 = new Vector2(0.5f, 1);
         private readonly Vector2 _UV_6 = new Vector2(1.077350269189625764509148780501f, 0);
+*/
 
         public void CreateTrail(Vector3[] positions)
         {
@@ -359,11 +360,11 @@ namespace VRCMarker
             _triangles[t3] = v0;
             _triangles[t4] = v2;
             _triangles[t5] = v3;
-
+/*
             _uv[v0] = _UV_0;
             _uv[v1] = _UV_1;
             _uv[v2] = _UV_2;
-            _uv[v3] = _UV_3;
+            _uv[v3] = _UV_3;*/
 
             _normals[v0] = end;
             _normals[v1] = end;
@@ -379,9 +380,9 @@ namespace VRCMarker
             _triangles[t7] = v5;
             _triangles[t8] = v4;
 
-            _uv[v4] = _UV_4;
+/*            _uv[v4] = _UV_4;
             _uv[v5] = _UV_5;
-            _uv[v6] = _UV_6;
+            _uv[v6] = _UV_6;*/
 
             _normals[v4] = Vector3.zero;
             _normals[v5] = Vector3.zero;
@@ -531,7 +532,7 @@ namespace VRCMarker
                 }
                 _vertices = ResizeArray(_vertices, verticesReserved);
                 _normals = ResizeArray(_normals, verticesReserved);
-                _uv = ResizeArray(_uv, verticesReserved);
+                //_uv = ResizeArray(_uv, verticesReserved);
             }
 
             if (_trianglesUsed + trianglesReserved > _triangles.Length)

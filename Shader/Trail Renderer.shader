@@ -16,12 +16,13 @@ Shader "Custom/VRCMarker/Trail Renderer"
         Tags
         {
             "RenderType"="Opaque"
+            "DisableBatching" = "True"
         }
 
         Pass
         {
             Cull Back
-            Tags {"Queue"="AlphaTest" "RenderType"="TransparentCutout" "DisableBatching" = "True"}
+            Tags {"Queue"="AlphaTest" "RenderType"="TransparentCutout" }
             //ZWrite Off
             //Blend SrcAlpha OneMinusSrcAlpha
             AlphaToMask On
@@ -39,6 +40,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float4 vertex : POSITION;
                 float2 uv0 : TEXCOORD0;
                 float3 otherPos : NORMAL;
+                uint vertexID : SV_VertexID;
             };
 
             struct v2f
@@ -46,6 +48,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float4 vertex : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 nointerpolation bool isLine : TEXCOORD1;
+                // uint vertexID : TEXCOORD2;
             };
 
             half3 _Color;
@@ -53,6 +56,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
             float3 centerEyePos()
             {
+                // trail tube looks more convincing in vr without this
                 // #if defined(UNITY_STEREO_MULTIVIEW_ENABLED) || defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_SINGLE_PASS_STEREO) 
                 //     return 0.5 * (unity_StereoWorldSpaceCameraPos[0] + unity_StereoWorldSpaceCameraPos[1]);
                 // #else
@@ -83,6 +87,19 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 return vertex;
             }
 
+            // vertices always set in this order, i hope
+            static const float2 offsets[7] =
+            {
+                float2(0, 0),
+                float2(0, 1),
+                float2(1, 1),
+                float2(1, 0),
+                float2(-0.077350269189625764509148780501f, 0),
+                float2(0.5f, 1),
+                float2(1.077350269189625764509148780501f, 0)
+            };
+
+
             v2f vert(appdata v)
             {
                 v2f o;
@@ -90,6 +107,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                 float3 vertexPos = v.vertex.xyz;
                 bool isLine = any(abs(v.otherPos));
+
+                float2 offset = offsets[v.vertexID % 7];
 
                 UNITY_BRANCH
                 if (isLine)
@@ -99,11 +118,11 @@ Shader "Custom/VRCMarker/Trail Renderer"
                     float3 scaleDir = normalize(cross(v1, v2));
                     scaleDir *= _Scale;
 
-                    if (v.uv0.x > 0) scaleDir = -scaleDir;
-                    // scaleDir *= v.uv0.x * 2 - 1;
+                    if (offset.x > 0) scaleDir = -scaleDir;
+                    // scaleDir *= offset.x * 2 - 1;
                     
-                    v.vertex.xyz += scaleDir * v.uv0.y;
-                    v.vertex.xyz -= scaleDir * (1 - v.uv0.y);
+                    v.vertex.xyz += scaleDir * offset.y;
+                    v.vertex.xyz -= scaleDir * (1 - offset.y);
                     
                     o.vertex = mul(UNITY_MATRIX_VP, v.vertex);
 
@@ -112,7 +131,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 {
                     float scaleFactor = 1.5;
                     float4 center = v.vertex;
-                    float2 triangleOffset = v.uv0 * 2 - 1;
+                    float2 triangleOffset = offset * 2 - 1;
                     triangleOffset *= _Scale * scaleFactor;
                     triangleOffset.y += _Scale * scaleFactor * UNITY_PI * 0.106;
 
@@ -129,14 +148,18 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                 //o.vertex = UnityObjectToClipPos(v.vertex);
                 
-                o.uv0 = v.uv0;
+                o.uv0 = offset;
                 o.isLine = isLine;
+                // o.vertexID = v.vertexID;
                 return o;
             }
 
             half4 frag(v2f i) : SV_Target
             {
                 half alpha = 1;
+
+                // return half4(i.vertexID.rrr/100., alpha);
+
                 UNITY_BRANCH
                 if (!i.isLine)
                 {
@@ -149,6 +172,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                     float pwidth = fwidth(circle);
                     alpha = saturate((size - circle) / pwidth);
+
                 }
                 else
                 {
@@ -160,8 +184,6 @@ Shader "Custom/VRCMarker/Trail Renderer"
                     alpha = saturate(alpha + pwidth / 2);
                 }
 
-
-                
                 return half4(_Color.rgb, alpha);
             }
             ENDCG

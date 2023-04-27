@@ -234,12 +234,12 @@ PrefabInstance:
     - target: {fileID: 1055321711490392694, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: blueprintId
-      value: wrld_df859907-113e-445b-9ec7-37c900c36c75
+      value: wrld_c91cce4c-3568-462b-91aa-93307b8d9866
       objectReference: {fileID: 0}
     - target: {fileID: 1055321711490392694, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: completedSDKPipeline
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1094421957795580606, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
@@ -1035,22 +1035,22 @@ PrefabInstance:
         type: 3}
       propertyPath: DynamicMaterials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c140e04943058f14595009983640dc93, type: 2}
+      objectReference: {fileID: 2100000, guid: 7948a8a92ff13ba4eb2325ddc8339b74, type: 2}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 7948a8a92ff13ba4eb2325ddc8339b74, type: 2}
+      objectReference: {fileID: 2100000, guid: c140e04943058f14595009983640dc93, type: 2}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[2]
       value: 
-      objectReference: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 2100000, guid: dfff2cc7941433f4d82fa7cbca153b76, type: 2}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[3]
       value: 
-      objectReference: {fileID: 2100000, guid: dfff2cc7941433f4d82fa7cbca153b76, type: 2}
+      objectReference: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[4]
@@ -7646,7 +7646,7 @@ GameObject:
   - component: {fileID: 1334145136}
   m_Layer: 22
   m_Name: PP
-  m_TagString: Untagged
+  m_TagString: PCOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8818,6 +8818,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 74486861}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1718247551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718247546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 229740497, guid: 4ecd63eff847044b68db9453ce219299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentType: 1
 --- !u!1 &1752375451 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2032845121056251825, guid: d623141a231a48e43b02346883eea70d,

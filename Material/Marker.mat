@@ -90,6 +90,7 @@ Material:
     - ResetFix: 1
     - SSS_Foldout: 0
     - _ACES: 0
+    - _AccentSaturation: 0.8
     - _AlbedoSaturation: 1
     - _Allow_LPPV_Toggle: 0
     - _AlphaToMask: 0
@@ -147,7 +148,7 @@ Material:
     - _ZWrite: 1
     - _specularAntiAliasingThreshold: 0.1
     - _specularAntiAliasingVariance: 0.15
-    - _toggle: 0
+    - _toggle: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 1}
