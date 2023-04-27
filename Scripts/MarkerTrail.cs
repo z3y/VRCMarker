@@ -301,7 +301,7 @@ namespace VRCMarker
             //normals[5] = Vector3.zero;
             //normals[6] = Vector3.zero;
 
-            _trailing.vertices = _trailingNormals;
+            _trailing.vertices = _trailingVertices;
             _trailing.normals = _trailingNormals;
             //_trailing.RecalculateBounds();
             _trailing.bounds = _infBounds;
