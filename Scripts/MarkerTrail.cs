@@ -197,17 +197,17 @@ namespace VRCMarker
         {
             var vertices = new Vector3[10];
             // lines
-            vertices[0] = Vector3.zero;
-            vertices[1] = Vector3.zero;
-            vertices[2] = Vector3.zero;
-            vertices[3] = Vector3.zero;
+            //vertices[0] = Vector3.zero;
+            //vertices[1] = Vector3.zero;
+            //vertices[2] = Vector3.zero;
+            //vertices[3] = Vector3.zero;
             // connections
-            vertices[4] = Vector3.zero;
-            vertices[5] = Vector3.zero;
-            vertices[6] = Vector3.zero;
-            vertices[7] = Vector3.zero;
-            vertices[8] = Vector3.zero;
-            vertices[9] = Vector3.zero;
+            //vertices[4] = Vector3.zero;
+            //vertices[5] = Vector3.zero;
+            //vertices[6] = Vector3.zero;
+            //vertices[7] = Vector3.zero;
+            //vertices[8] = Vector3.zero;
+            //vertices[9] = Vector3.zero;
 
             var triangles = new int[12];
             // lines
@@ -241,10 +241,10 @@ namespace VRCMarker
 
             var normals = new Vector3[10];
             // lines
-            normals[0] = Vector3.zero;
-            normals[1] = Vector3.zero;
-            normals[2] = Vector3.zero;
-            normals[3] = Vector3.zero;
+            //normals[0] = Vector3.zero;
+            //normals[1] = Vector3.zero;
+            //normals[2] = Vector3.zero;
+            //normals[3] = Vector3.zero;
             // connections
             //normals[4] = Vector3.zero;
             //normals[5] = Vector3.zero;
@@ -256,35 +256,53 @@ namespace VRCMarker
             //_trailing.SetUVs(0, uv);
         }
 
+        private Vector3[] _trailingVertices = new Vector3[10];
+        private Vector3[] _trailingNormals = new Vector3[10];
+
         private void UpdateTrailingLine(Vector3 start, Vector3 end)
         {
-            var vertices = new Vector3[10];
             // lines
-            vertices[0] = start;
-            vertices[1] = start;
-            vertices[2] = end;
-            vertices[3] = end;
+            /*_trailingVertices[0] = start;
+            _trailingVertices[1] = start;
+            _trailingVertices[2] = end;
+            _trailingVertices[3] = end;
             // connections
-            vertices[4] = start;
-            vertices[5] = start;
-            vertices[6] = start;
-            vertices[7] = end;
-            vertices[8] = end;
-            vertices[9] = end;
+            _trailingVertices[4] = start;
+            _trailingVertices[5] = start;
+            _trailingVertices[6] = start;
+            _trailingVertices[7] = end;
+            _trailingVertices[8] = end;
+            _trailingVertices[9] = end;
 
-            var normals = new Vector3[10];
             // lines
-            normals[0] = end;
-            normals[1] = end;
-            normals[2] = start;
-            normals[3] = start;
-            // connections
+            _trailingNormals[0] = end;
+            _trailingNormals[1] = end;
+            _trailingNormals[2] = start;
+            _trailingNormals[3] = start;*/
+
+            // does the same as code above but in less readable order might be more performant
+            _trailingVertices[0] = start;
+            _trailingVertices[1] = start;
+            _trailingVertices[4] = start;
+            _trailingVertices[5] = start;
+            _trailingVertices[6] = start;
+            _trailingNormals[2] = start;
+            _trailingNormals[3] = start;
+            _trailingVertices[2] = end;
+            _trailingVertices[3] = end;
+            _trailingVertices[7] = end;
+            _trailingVertices[8] = end;
+            _trailingVertices[9] = end;
+            _trailingNormals[0] = end;
+            _trailingNormals[1] = end;
+
+            // connections, already zero
             //normals[4] = Vector3.zero;
             //normals[5] = Vector3.zero;
             //normals[6] = Vector3.zero;
 
-            _trailing.vertices = vertices;
-            _trailing.normals = normals;
+            _trailing.vertices = _trailingNormals;
+            _trailing.normals = _trailingNormals;
             //_trailing.RecalculateBounds();
             _trailing.bounds = _infBounds;
         }
