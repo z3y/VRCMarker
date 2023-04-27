@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Runtime.CompilerServices;
 using UdonSharp;
 #if UNITY_EDITOR && !COMPILER_UDONSHARP
 using UnityEditor;

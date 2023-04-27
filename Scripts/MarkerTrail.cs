@@ -46,6 +46,9 @@ namespace VRCMarker
         private Vector3[] _syncLines = new Vector3[MarkerSync.MaxSyncCount];
         private int _syncLinesUsed = 0;
 
+        const float FloatHalfMax = float.MaxValue / 2.0f;
+        private Bounds _infBounds = new Bounds(Vector3.zero, new Vector3(FloatHalfMax, FloatHalfMax, FloatHalfMax));
+
         private void Start()
         {
             _mesh = new Mesh();
@@ -57,6 +60,8 @@ namespace VRCMarker
             _trailing.name = "Trailing";
             _trailing.MarkDynamic();
             trailingMesh.sharedMesh = _trailing;
+
+
 
             var propertyBlock = new MaterialPropertyBlock();
 
@@ -164,7 +169,8 @@ namespace VRCMarker
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
             //_mesh.SetUVs(0, _uv);
-            _mesh.RecalculateBounds();
+            //_mesh.RecalculateBounds();
+            _mesh.bounds = _infBounds;
         }
 
         public void Clear()
@@ -279,19 +285,20 @@ namespace VRCMarker
 
             _trailing.vertices = vertices;
             _trailing.normals = normals;
-            _trailing.RecalculateBounds();
+            //_trailing.RecalculateBounds();
+            _trailing.bounds = _infBounds;
         }
 
-/*
-        // moved to the shader 
-        private readonly Vector2 _UV_0 = new Vector2(0, 0);
-        private readonly Vector2 _UV_1 = new Vector2(0, 1);
-        private readonly Vector2 _UV_2 = new Vector2(1, 1);
-        private readonly Vector2 _UV_3 = new Vector2(1, 0);
-        private readonly Vector2 _UV_4 = new Vector2(-0.077350269189625764509148780501f, 0);
-        private readonly Vector2 _UV_5 = new Vector2(0.5f, 1);
-        private readonly Vector2 _UV_6 = new Vector2(1.077350269189625764509148780501f, 0);
-*/
+        /*
+                // moved to the shader 
+                private readonly Vector2 _UV_0 = new Vector2(0, 0);
+                private readonly Vector2 _UV_1 = new Vector2(0, 1);
+                private readonly Vector2 _UV_2 = new Vector2(1, 1);
+                private readonly Vector2 _UV_3 = new Vector2(1, 0);
+                private readonly Vector2 _UV_4 = new Vector2(-0.077350269189625764509148780501f, 0);
+                private readonly Vector2 _UV_5 = new Vector2(0.5f, 1);
+                private readonly Vector2 _UV_6 = new Vector2(1.077350269189625764509148780501f, 0);
+        */
 
         public void CreateTrail(Vector3[] positions)
         {
