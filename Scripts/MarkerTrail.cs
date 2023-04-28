@@ -175,7 +175,6 @@ namespace VRCMarker
         }
 
         public void RecalculateMeshBounds() => _mesh.RecalculateBounds();
-        public void SetInfiniteMeshBounds() => _mesh.bounds = _infBounds;
 
         public void Clear()
         {
