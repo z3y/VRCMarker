@@ -32,7 +32,6 @@ namespace VRCMarker
                         markerTrail.StopWriting();
                         markerTrail.AddEndCap();
                     }
-                    markerTrail.SetInfiniteMeshBounds();
                     markerTrail.StartWriting();
                     break;
                 case 1: // stop writing without sync
