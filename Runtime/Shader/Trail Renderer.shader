@@ -41,6 +41,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float2 uv0 : TEXCOORD0;
                 float3 otherPos : NORMAL;
                 uint vertexID : SV_VertexID;
+
+                UNITY_VERTEX_INPUT_INSTANCE_ID //Insert
             };
 
             struct v2f
@@ -49,6 +51,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float2 uv0 : TEXCOORD0;
                 nointerpolation bool isLine : TEXCOORD1;
                 // uint vertexID : TEXCOORD2;
+
+                UNITY_VERTEX_OUTPUT_STEREO //Insert
             };
 
             half3 _Color;
@@ -103,7 +107,9 @@ Shader "Custom/VRCMarker/Trail Renderer"
             v2f vert(appdata v)
             {
                 v2f o;
-                UNITY_INITIALIZE_OUTPUT(v2f, o);
+                UNITY_SETUP_INSTANCE_ID(v); //Insert
+                UNITY_INITIALIZE_OUTPUT(v2f, o); //Insert
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o); //Insert
 
                 float3 vertexPos = v.vertex.xyz;
                 bool isLine = any(abs(v.otherPos));
@@ -156,6 +162,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
             half4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i); //Insert
+                
                 half alpha = 1;
 
                 // return half4(i.vertexID.rrr/100., alpha);
