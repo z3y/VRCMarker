@@ -408,10 +408,11 @@ namespace VRCMarker
 /*            _uv[v4] = _UV_4;
             _uv[v5] = _UV_5;
             _uv[v6] = _UV_6;*/
-
-            _normals[v4] = Vector3.zero;
-            _normals[v5] = Vector3.zero;
-            _normals[v6] = Vector3.zero;
+            
+            // already 0
+            //_normals[v4] = Vector3.zero;
+            //_normals[v5] = Vector3.zero;
+            //_normals[v6] = Vector3.zero;
 
             _verticesUsed += VertexIncrement;
             _trianglesUsed += TriangleIncrement;
