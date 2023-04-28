@@ -97,7 +97,7 @@ namespace VRCMarker
 
             UpdateTrailingLine(_smoothingPosition, _previousPosition);
 
-            if (_time <= updateRate || !enabled || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance)
+            if (_time <= updateRate || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance || !enabled)
             {
                 return;
             }
@@ -153,6 +153,7 @@ namespace VRCMarker
             {
                 AddEndCap();
                 StoreLastLinesTransform(_smoothingPosition);
+                RecalculateMeshBounds();
             }
         }
 
@@ -172,6 +173,9 @@ namespace VRCMarker
             //_mesh.RecalculateBounds();
             _mesh.bounds = _infBounds;
         }
+
+        public void RecalculateMeshBounds() => _mesh.RecalculateBounds();
+        public void SetInfiniteMeshBounds() => _mesh.bounds = _infBounds;
 
         public void Clear()
         {
