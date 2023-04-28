@@ -33,12 +33,13 @@ namespace VRCMarker
                         markerTrail.AddEndCap();
                     }
                     markerTrail.StartWriting();
-                    return;
+                    break;
                 case 1: // stop writing without sync
                     markerTrail.StopWriting();
                     markerTrail.AddEndCap();
                     markerTrail.UpdateUsedVertices();
-                    return;
+                    markerTrail.RecalculateMeshBounds();
+                    break;
                 case 2: // stop writing with sync
                     markerTrail.StopWriting();
                     int length = syncedLastTrailPoints.Length;
@@ -53,8 +54,10 @@ namespace VRCMarker
                         markerTrail.UpdateUsedVertices();
                         markerTrail.UpdateMeshData();
                     }
-                    return;
+                    markerTrail.RecalculateMeshBounds();
+                    break;
             }
+
         }
 
         public void SyncMarker()

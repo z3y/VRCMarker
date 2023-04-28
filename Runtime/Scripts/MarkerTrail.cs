@@ -23,7 +23,7 @@ namespace VRCMarker
         private Vector3[] _vertices = new Vector3[0];
         private int[] _triangles = new int[0];
         private Vector3[] _normals = new Vector3[0];
-        private Vector2[] _uv = new Vector2[0];
+        //private Vector2[] _uv = new Vector2[0];
 
         public int vertexLimit = 32000;
         private int _verticesUsed = 0;
@@ -46,7 +46,8 @@ namespace VRCMarker
         private Vector3[] _syncLines = new Vector3[MarkerSync.MaxSyncCount];
         private int _syncLinesUsed = 0;
 
-        private const string Version = "1";
+        const float FloatHalfMax = float.MaxValue / 2.0f;
+        private Bounds _infBounds = new Bounds(Vector3.zero, new Vector3(FloatHalfMax, FloatHalfMax, FloatHalfMax));
 
         private void Start()
         {
@@ -59,6 +60,8 @@ namespace VRCMarker
             _trailing.name = "Trailing";
             _trailing.MarkDynamic();
             trailingMesh.sharedMesh = _trailing;
+
+
 
             var propertyBlock = new MaterialPropertyBlock();
 
@@ -94,7 +97,7 @@ namespace VRCMarker
 
             UpdateTrailingLine(_smoothingPosition, _previousPosition);
 
-            if (_time <= updateRate || !enabled || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance)
+            if (_time <= updateRate || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance || !enabled)
             {
                 return;
             }
@@ -150,6 +153,7 @@ namespace VRCMarker
             {
                 AddEndCap();
                 StoreLastLinesTransform(_smoothingPosition);
+                RecalculateMeshBounds();
             }
         }
 
@@ -165,9 +169,12 @@ namespace VRCMarker
             _mesh.vertices = _vertices;
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
-            _mesh.SetUVs(0, _uv);
-            _mesh.RecalculateBounds();
+            //_mesh.SetUVs(0, _uv);
+            //_mesh.RecalculateBounds();
+            _mesh.bounds = _infBounds;
         }
+
+        public void RecalculateMeshBounds() => _mesh.RecalculateBounds();
 
         public void Clear()
         {
@@ -175,11 +182,11 @@ namespace VRCMarker
             _vertices = new Vector3[0];
             _triangles = new int[0];
             _normals = new Vector3[0];
-            _uv = new Vector2[0];
+            //_uv = new Vector2[0];
 
             _mesh.triangles = _triangles;
             _mesh.normals = _normals;
-            _mesh.SetUVs(0, _uv);
+            //_mesh.SetUVs(0, _uv);
             _mesh.vertices = _vertices;
 
             _verticesUsed = 0;
@@ -193,17 +200,17 @@ namespace VRCMarker
         {
             var vertices = new Vector3[10];
             // lines
-            vertices[0] = Vector3.zero;
-            vertices[1] = Vector3.zero;
-            vertices[2] = Vector3.zero;
-            vertices[3] = Vector3.zero;
+            //vertices[0] = Vector3.zero;
+            //vertices[1] = Vector3.zero;
+            //vertices[2] = Vector3.zero;
+            //vertices[3] = Vector3.zero;
             // connections
-            vertices[4] = Vector3.zero;
-            vertices[5] = Vector3.zero;
-            vertices[6] = Vector3.zero;
-            vertices[7] = Vector3.zero;
-            vertices[8] = Vector3.zero;
-            vertices[9] = Vector3.zero;
+            //vertices[4] = Vector3.zero;
+            //vertices[5] = Vector3.zero;
+            //vertices[6] = Vector3.zero;
+            //vertices[7] = Vector3.zero;
+            //vertices[8] = Vector3.zero;
+            //vertices[9] = Vector3.zero;
 
             var triangles = new int[12];
             // lines
@@ -221,9 +228,9 @@ namespace VRCMarker
             triangles[10] = 8;
             triangles[11] = 7;
 
-            var uv = new Vector2[10];
+            //var uv = new Vector2[10];
             // lines
-            uv[0] = _UV_0;
+/*            uv[0] = _UV_0;
             uv[1] = _UV_1;
             uv[2] = _UV_2;
             uv[3] = _UV_3;
@@ -233,14 +240,14 @@ namespace VRCMarker
             uv[6] = _UV_6;
             uv[7] = _UV_4;
             uv[8] = _UV_5;
-            uv[9] = _UV_6;
+            uv[9] = _UV_6;*/
 
             var normals = new Vector3[10];
             // lines
-            normals[0] = Vector3.zero;
-            normals[1] = Vector3.zero;
-            normals[2] = Vector3.zero;
-            normals[3] = Vector3.zero;
+            //normals[0] = Vector3.zero;
+            //normals[1] = Vector3.zero;
+            //normals[2] = Vector3.zero;
+            //normals[3] = Vector3.zero;
             // connections
             //normals[4] = Vector3.zero;
             //normals[5] = Vector3.zero;
@@ -249,48 +256,70 @@ namespace VRCMarker
             _trailing.vertices = vertices;
             _trailing.triangles = triangles;
             _trailing.normals = normals;
-            _trailing.SetUVs(0, uv);
+            //_trailing.SetUVs(0, uv);
         }
+
+        private Vector3[] _trailingVertices = new Vector3[10];
+        private Vector3[] _trailingNormals = new Vector3[10];
 
         private void UpdateTrailingLine(Vector3 start, Vector3 end)
         {
-            var vertices = new Vector3[10];
             // lines
-            vertices[0] = start;
-            vertices[1] = start;
-            vertices[2] = end;
-            vertices[3] = end;
+            /*_trailingVertices[0] = start;
+            _trailingVertices[1] = start;
+            _trailingVertices[2] = end;
+            _trailingVertices[3] = end;
             // connections
-            vertices[4] = start;
-            vertices[5] = start;
-            vertices[6] = start;
-            vertices[7] = end;
-            vertices[8] = end;
-            vertices[9] = end;
+            _trailingVertices[4] = start;
+            _trailingVertices[5] = start;
+            _trailingVertices[6] = start;
+            _trailingVertices[7] = end;
+            _trailingVertices[8] = end;
+            _trailingVertices[9] = end;
 
-            var normals = new Vector3[10];
             // lines
-            normals[0] = end;
-            normals[1] = end;
-            normals[2] = start;
-            normals[3] = start;
-            // connections
+            _trailingNormals[0] = end;
+            _trailingNormals[1] = end;
+            _trailingNormals[2] = start;
+            _trailingNormals[3] = start;*/
+
+            // does the same as code above but in less readable order might be more performant
+            _trailingVertices[0] = start;
+            _trailingVertices[1] = start;
+            _trailingVertices[4] = start;
+            _trailingVertices[5] = start;
+            _trailingVertices[6] = start;
+            _trailingNormals[2] = start;
+            _trailingNormals[3] = start;
+            _trailingVertices[2] = end;
+            _trailingVertices[3] = end;
+            _trailingVertices[7] = end;
+            _trailingVertices[8] = end;
+            _trailingVertices[9] = end;
+            _trailingNormals[0] = end;
+            _trailingNormals[1] = end;
+
+            // connections, already zero
             //normals[4] = Vector3.zero;
             //normals[5] = Vector3.zero;
             //normals[6] = Vector3.zero;
 
-            _trailing.vertices = vertices;
-            _trailing.normals = normals;
-            _trailing.RecalculateBounds();
+            _trailing.vertices = _trailingVertices;
+            _trailing.normals = _trailingNormals;
+            //_trailing.RecalculateBounds();
+            _trailing.bounds = _infBounds;
         }
 
-        private readonly Vector2 _UV_0 = new Vector2(0, 0);
-        private readonly Vector2 _UV_1 = new Vector2(0, 1);
-        private readonly Vector2 _UV_2 = new Vector2(1, 1);
-        private readonly Vector2 _UV_3 = new Vector2(1, 0);
-        private readonly Vector2 _UV_4 = new Vector2(-0.077350269189625764509148780501f, 0);
-        private readonly Vector2 _UV_5 = new Vector2(0.5f, 1);
-        private readonly Vector2 _UV_6 = new Vector2(1.077350269189625764509148780501f, 0);
+        /*
+                // moved to the shader 
+                private readonly Vector2 _UV_0 = new Vector2(0, 0);
+                private readonly Vector2 _UV_1 = new Vector2(0, 1);
+                private readonly Vector2 _UV_2 = new Vector2(1, 1);
+                private readonly Vector2 _UV_3 = new Vector2(1, 0);
+                private readonly Vector2 _UV_4 = new Vector2(-0.077350269189625764509148780501f, 0);
+                private readonly Vector2 _UV_5 = new Vector2(0.5f, 1);
+                private readonly Vector2 _UV_6 = new Vector2(1.077350269189625764509148780501f, 0);
+        */
 
         public void CreateTrail(Vector3[] positions)
         {
@@ -359,11 +388,11 @@ namespace VRCMarker
             _triangles[t3] = v0;
             _triangles[t4] = v2;
             _triangles[t5] = v3;
-
+/*
             _uv[v0] = _UV_0;
             _uv[v1] = _UV_1;
             _uv[v2] = _UV_2;
-            _uv[v3] = _UV_3;
+            _uv[v3] = _UV_3;*/
 
             _normals[v0] = end;
             _normals[v1] = end;
@@ -379,13 +408,14 @@ namespace VRCMarker
             _triangles[t7] = v5;
             _triangles[t8] = v4;
 
-            _uv[v4] = _UV_4;
+/*            _uv[v4] = _UV_4;
             _uv[v5] = _UV_5;
-            _uv[v6] = _UV_6;
-
-            _normals[v4] = Vector3.zero;
-            _normals[v5] = Vector3.zero;
-            _normals[v6] = Vector3.zero;
+            _uv[v6] = _UV_6;*/
+            
+            // already 0
+            //_normals[v4] = Vector3.zero;
+            //_normals[v5] = Vector3.zero;
+            //_normals[v6] = Vector3.zero;
 
             _verticesUsed += VertexIncrement;
             _trianglesUsed += TriangleIncrement;
@@ -531,7 +561,7 @@ namespace VRCMarker
                 }
                 _vertices = ResizeArray(_vertices, verticesReserved);
                 _normals = ResizeArray(_normals, verticesReserved);
-                _uv = ResizeArray(_uv, verticesReserved);
+                //_uv = ResizeArray(_uv, verticesReserved);
             }
 
             if (_trianglesUsed + trianglesReserved > _triangles.Length)
