@@ -38,7 +38,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv0 : TEXCOORD0;
+                //float2 uv0 : TEXCOORD0;
                 float3 otherPos : NORMAL;
                 uint vertexID : SV_VertexID;
 

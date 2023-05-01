@@ -459,7 +459,7 @@ namespace VRCMarker
             RemoveLastLine();
             if (!IsLastPositionEndOfLine())
             {
-                for (int i = count - 1; i >= breakCount && _verticesUsed > 0; i--)
+                for (int i = count - 1; i >= breakCount && _verticesUsed > 0; i-=7)
                 {
                     RemoveLastLine();
                     if (IsLastPositionEndOfLine())
@@ -484,10 +484,11 @@ namespace VRCMarker
             }
 
             int newVertexCount = _verticesUsed - VertexIncrement;
-            for (int i = _verticesUsed; i >= newVertexCount; i--)
+            /*for (int i = _verticesUsed; i >= newVertexCount; i--)
             {
                 _vertices[i] = Vector3.zero;
-            }
+            }*/
+            Array.Clear(_vertices, newVertexCount, VertexIncrement);
             _verticesUsed = newVertexCount;
 
         }
