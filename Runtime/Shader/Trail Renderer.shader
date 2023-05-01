@@ -67,7 +67,10 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float4 vertex : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 nointerpolation bool isLine : TEXCOORD1;
-                uint vertexID : TEXCOORD2;
+
+                #ifdef _GRADIENT_ENABLED
+                    uint vertexID : TEXCOORD2;
+                #endif
 
                 UNITY_VERTEX_OUTPUT_STEREO //Insert
             };
@@ -183,7 +186,11 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 
                 o.uv0 = offset;
                 o.isLine = isLine;
-                o.vertexID = v.vertexID;
+
+                #ifdef _GRADIENT_ENABLED
+                    o.vertexID = v.vertexID;
+                #endif
+                
                 return o;
             }
 
