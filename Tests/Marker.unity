@@ -3602,8 +3602,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358063555}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -54.7, y: -143.9, z: -0.9999275}
-  m_LocalScale: {x: 385.55273, y: 150.64447, z: 385.55273}
+  m_LocalPosition: {x: -54.7, y: -132.2, z: -0.9999275}
+  m_LocalScale: {x: 366.4016, y: 175.41791, z: 366.4016}
   m_Children: []
   m_Father: {fileID: 440833316}
   m_RootOrder: 2
@@ -8198,24 +8198,23 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '- Custom Trail Renderer written in Udon
 
-    - Very Optimized. No overhead
-    while idle, 1 draw call
+    - Rounded Trail on PC and
+    Quest
 
-    - Rounded Trail on PC and Quest
+    - Optimized with no overhead while idle
 
     - Undo
 
-    -
-    Trail Sync
+    - Trail Sync
 
-    - Trail Smoothing
+    -
+    Trail Smoothing
 
     - Vertex Limit
 
     - Trail Emission
 
-    -
-    LTCGI'
+    - Gradient'
 --- !u!222 &1070976280
 CanvasRenderer:
   m_ObjectHideFlags: 0

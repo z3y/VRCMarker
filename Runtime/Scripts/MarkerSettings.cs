@@ -19,7 +19,7 @@ namespace VRCMarker
             Gradient
         }
 
-        [Header("Settings")]
+        [Header("Trail Settings")]
 
 
         [Range(0.001f, 0.01f)] public float width = 0.003f;
