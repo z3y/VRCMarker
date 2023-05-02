@@ -12,7 +12,12 @@ namespace VRCMarker
     {
         public Marker marker;
         public Transform trailPosition;
+
+        public int trailType = 0;
         public Color color = Color.white;
+        public Gradient gradient;
+
+
         public float emission = 1f;
         public float minDistance = 0.002f;
         public float width = 0.003f;
@@ -25,7 +30,7 @@ namespace VRCMarker
         private Vector3[] _normals = new Vector3[0];
         //private Vector2[] _uv = new Vector2[0];
 
-        public int vertexLimit = 32000;
+        const int _vertexLimit = 16000;
         private int _verticesUsed = 0;
         private int _lastVerticesUsed = 0;
         private int _trianglesUsed = 0;
@@ -55,25 +60,47 @@ namespace VRCMarker
             trailStorage.GetComponent<MeshFilter>().sharedMesh = _mesh;
 
             var propertyBlock = new MaterialPropertyBlock();
+            var renderer = trailStorage.GetComponent<MeshRenderer>();
 
+            if (trailType == 0)
+            {
 #if UNITY_ANDROID
-            propertyBlock.SetColor("_Color", color);
+                propertyBlock.SetColor("_Color", color);
 #else
             propertyBlock.SetColor("_Color", color * emission);
 #endif
+            }
+            else if (trailType == 1)
+            {
+                renderer.material.EnableKeyword("_GRADIENT_ENABLED");
+                SetGradient(propertyBlock);
+            }
 
             propertyBlock.SetFloat("_Scale", width);
-
-            trailStorage.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
+            renderer.SetPropertyBlock(propertyBlock);
 
             ResetTransforms();
-
 
             enabled = false;
         }
 
+        public void SetGradient(MaterialPropertyBlock pb)
+        {
+            var keys = gradient.colorKeys;
+            int gradientLength = keys.Length;
 
-        
+            pb.SetFloat("_GradientLength", gradientLength);
+
+            var gradients = new Vector4[gradientLength];
+            for (int i = 0; i < gradients.Length; i++)
+            {
+                var key = keys[i];
+                gradients[i] = key.color;
+                gradients[i].w = key.time;
+            }
+
+            pb.SetVectorArray("_Gradient", gradients);
+        }
 
         private void Update()
         {
@@ -463,7 +490,7 @@ namespace VRCMarker
             int vCount = _verticesUsed + verticesReserved;
             if (vCount > _vertices.Length)
             {
-                if (vCount > vertexLimit)
+                if (vCount > _vertexLimit)
                 {
                     _verticesUsed = 0;
                     _trianglesUsed = 0;

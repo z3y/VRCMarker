@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Trail
   m_Shader: {fileID: 4800000, guid: af0dc8b09e160004385a14f815a3aa3c, type: 3}
-  m_ShaderKeywords: _GRADIENT_ENABLED
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -64,7 +64,8 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GradientFrequency: 68.68
-    - _GradientPeriod: 95.2
+    - _GradientLength: 7
+    - _GradientPeriod: 200
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -74,16 +75,16 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _UseGradient: 1
+    - _UseGradient: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 0.4198113, b: 0.5104542, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Gradient0: {r: 1, g: 1, b: 1, a: 1}
-    - _Gradient1: {r: 1, g: 0.07075467, b: 0.07075467, a: 0.6}
-    - _Gradient2: {r: 0.6523497, g: 0.20283014, b: 1, a: 0.5019608}
-    - _Gradient3: {r: 0.40496808, g: 1, b: 0.108490534, a: 0.4}
-    - _Gradient4: {r: 0.080188654, g: 0.7788293, b: 1, a: 0.29803923}
-    - _Gradient5: {r: 0.686183, g: 0, b: 1, a: 0.2}
-    - _Gradient6: {r: 0.76338416, g: 1, b: 0.27830178, a: 0.101960786}
-    - _Gradient7: {r: 0, g: 0, b: 0, a: 0}
+    - _Gradient1: {r: 0.6981132, g: 0.3457636, b: 0.3457636, a: 0.7921569}
+    - _Gradient2: {r: 1, g: 0, b: 0.270936, a: 1}
+    - _Gradient3: {r: 1, g: 0.109803915, b: 0.918259, a: 0.4}
+    - _Gradient4: {r: 0.38370597, g: 0.07843137, b: 1, a: 0.29803923}
+    - _Gradient5: {r: 0, g: 0.034326077, b: 1, a: 0.2}
+    - _Gradient6: {r: 0.27843142, g: 1, b: 0.9866857, a: 0.101960786}
+    - _Gradient7: {r: 0.50614095, g: 0.8867924, b: 0.71023095, a: 0}

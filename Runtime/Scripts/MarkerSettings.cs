@@ -13,6 +13,12 @@ namespace VRCMarker
         public Marker marker;
         public MarkerTrail markerTrail;
 
+        public enum TrailType
+        {
+            Color,
+            Gradient
+        }
+
         [Header("Settings")]
         [ColorUsage(false, false)] public Color color = Color.white;
         [Tooltip("Color multiplier to allow HDR values for trail emission")]
@@ -25,7 +31,12 @@ namespace VRCMarker
 
         [Tooltip("Min time before new lines are added")][Range(0.02f, 0.2f)] public float updateRate = 0.03f;
         [Tooltip("Min distance before new lines are added")][Range(0.001f, 0.01f)] public float minDistance = 0.002f;
-        [Tooltip("Limit when trail will delete vertices in order they were drawn")] public int vertexLimit = 32000;
+
+        public TrailType trailType;
+
+        public Gradient gradient;
+
+        //[Tooltip("Limit when trail will delete vertices in order they were drawn")] public int vertexLimit = 32000;
 
         private void Start()
         {
@@ -38,13 +49,18 @@ namespace VRCMarker
             {
                 return;
             }
+
             markerTrail.color = color;
             marker.SetColor();
+            markerTrail.gradient = gradient;
+
+            markerTrail.trailType = (int)trailType;
+
             markerTrail.width = width;
             markerTrail.smoothing = smoothing;
             markerTrail.updateRate = updateRate;
             markerTrail.minDistance = minDistance;
-            markerTrail.vertexLimit = vertexLimit;
+            //markerTrail._vertexLimit = vertexLimit;
             markerTrail.emission = trailEmission;
         }
 
