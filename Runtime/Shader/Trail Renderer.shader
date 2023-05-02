@@ -23,6 +23,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
         _Gradient5 ("Color", Color) = (1,1,1,1)
         _Gradient6 ("Color", Color) = (1,1,1,1)
         _Gradient7 ("Color", Color) = (1,1,1,1)
+
+        _GradientLength ("Gradient Length", Float) = 2
     }
 
     SubShader
@@ -69,7 +71,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 nointerpolation bool isLine : TEXCOORD1;
 
                 #ifdef _GRADIENT_ENABLED
-                    uint vertexID : TEXCOORD2;
+                    half3 gradient : TEXCOORD2;
                 #endif
 
                 UNITY_VERTEX_OUTPUT_STEREO //Insert
@@ -87,6 +89,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
             half4 _Gradient6;
             half4 _Gradient7;
             bool _UseGradient;
+            uint _GradientLength;
 
             float3 centerEyePos()
             {
@@ -133,6 +136,42 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float2(1.077350269189625764509148780501f, 0)
             };
 
+            struct Gradient
+            {
+                int type;
+                int colorsLength;
+                half4 colors[8];
+            };
+
+            Gradient NewGradient(int type, int colorsLength,
+                float4 colors0, float4 colors1, float4 colors2, float4 colors3, float4 colors4, float4 colors5, float4 colors6, float4 colors7)
+            {
+                Gradient output =
+                {
+                    type, colorsLength,
+                    {colors0, colors1, colors2, colors3, colors4, colors5, colors6, colors7}
+                };
+                return output;
+            }
+
+            half3 EvaluateGradient(Gradient gradient, half time)
+            {
+                half3 color = gradient.colors[0].rgb;
+                [unroll(8)]
+                for (int c = 1; c < gradient.colorsLength; c++)
+                {
+                    half colorPos = saturate((time - gradient.colors[c - 1].w) / (gradient.colors[c].w - gradient.colors[c - 1].w)) * step(c, gradient.colorsLength - 1);
+                    color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+                }
+
+                return color;
+            }
+
+            half evaluateTime(uint id, half frequency)
+            {
+                half t = (sin((float)id / frequency) + 1.0) / 2.0;
+                return t;
+            }
 
             v2f vert(appdata v)
             {
@@ -188,48 +227,36 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 o.isLine = isLine;
 
                 #ifdef _GRADIENT_ENABLED
-                    o.vertexID = v.vertexID;
+
+                    uint index = v.vertexID % 7;
+                    half vv = index >= 2 ? v.vertexID - index : v.vertexID + (7 - index);
+                    // half vv = v.vertexID;
+
+                    if (!isLine)
+                    {
+                        vv = v.vertexID + index - 3;
+                    }
+
+                    half t = evaluateTime(vv, _GradientPeriod);
+                    Gradient g = NewGradient(0,_GradientLength,
+                    _Gradient0,
+                    _Gradient1,
+                    _Gradient2,
+                    _Gradient3,
+                    _Gradient4,
+                    _Gradient5,
+                    _Gradient6,
+                    _Gradient7
+                    );
+                    // color = EvaluateGradient(g,t);
+
+                    o.gradient = EvaluateGradient(g,t);
+                    // o.gradient = m;
                 #endif
                 
                 return o;
             }
 
-            struct Gradient
-            {
-                int type;
-                int colorsLength;
-                half4 colors[8];
-            };
-
-            Gradient NewGradient(int type, int colorsLength,
-                float4 colors0, float4 colors1, float4 colors2, float4 colors3, float4 colors4, float4 colors5, float4 colors6, float4 colors7)
-            {
-                Gradient output =
-                {
-                    type, colorsLength,
-                    {colors0, colors1, colors2, colors3, colors4, colors5, colors6, colors7}
-                };
-                return output;
-            }
-
-            half3 EvaluateGradient(Gradient gradient, half time)
-            {
-                half3 color = gradient.colors[0].rgb;
-                [unroll]
-                for (int c = 1; c < gradient.colorsLength; c++)
-                {
-                    half colorPos = saturate((time - gradient.colors[c - 1].w) / (gradient.colors[c].w - gradient.colors[c - 1].w)) * step(c, gradient.colorsLength - 1);
-                    color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-                }
-
-                return color;
-            }
-
-            half evaluateTime(half x, half frequency)
-            {
-                half t = (sin(x / frequency) + 1.0) / 2.0;
-                return t;
-            }
 
             half4 frag(v2f i) : SV_Target
             {
@@ -250,7 +277,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                     float pwidth = fwidth(circle);
                     alpha = saturate((size - circle) / pwidth);
-
+                    // alpha = 0;
                 }
                 else
                 {
@@ -260,25 +287,17 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                     alpha = saturate((size) / pwidth);
                     alpha = saturate(alpha + pwidth / 2);
+                    // alpha = 0;
                 }
 
-                half3 color = _Color;
+
 
                 #ifdef _GRADIENT_ENABLED
-                    half t = evaluateTime(i.vertexID, _GradientPeriod);
-                    Gradient g = NewGradient(0,8,
-                    _Gradient0,
-                    _Gradient1,
-                    _Gradient2,
-                    _Gradient3,
-                    _Gradient4,
-                    _Gradient5,
-                    _Gradient6,
-                    _Gradient7
-                    );
-                    // color = EvaluateGradient(g,t);
-                    color = t;
+                    half3 color = i.gradient;
+                #else
+                    half3 color = _Color;
                 #endif
+
 
                 return half4(color, alpha);
             }
