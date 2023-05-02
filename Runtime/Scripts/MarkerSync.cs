@@ -30,13 +30,13 @@ namespace VRCMarker
                     if (markerTrail.enabled)
                     {
                         markerTrail.StopWriting();
-                        markerTrail.AddEndCap();
+                        //markerTrail.AddEndCap();
                     }
                     markerTrail.StartWriting();
                     break;
                 case 1: // stop writing without sync
                     markerTrail.StopWriting();
-                    markerTrail.AddEndCap();
+                    //markerTrail.AddEndCap();
                     markerTrail.UpdateUsedVertices();
                     markerTrail.RecalculateMeshBounds();
                     break;
