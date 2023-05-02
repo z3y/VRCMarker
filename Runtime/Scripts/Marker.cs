@@ -89,5 +89,6 @@ namespace VRCMarker
             pb.SetColor("_Color", markerTrail.color);
             markerMesh.SetPropertyBlock(pb);
         }
+
     }
 }

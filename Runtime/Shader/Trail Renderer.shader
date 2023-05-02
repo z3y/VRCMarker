@@ -4,10 +4,17 @@ Shader "Custom/VRCMarker/Trail Renderer"
     {
         _Color ("Color", Color) = (1,1,1,1)
         _Scale ("Width", Range(0, 1)) = 0.5
+        _GradientPeriod ("Gradient Period", Float) = 70
+
         //[NoScaleOffset] _MainTex("Albedo (RGB)", 2D) = "white" {}
         ////[NoScaleOffset] _MetallicGlossMap("Mask Map", 2D) = "white" {}
         //[NoScaleOffset] _ColorMask("Color Mask Map", 2D) = "white" {}
         //_Glossiness ("Smoothness", Range(0,1)) = 0.5
+
+
+        //[Toggle(_GRADIENT_ENABLED)] _UseGradient ("UseGradient", Float) = 0
+
+        _GradientLength ("Gradient Length", Float) = 2
     }
 
     SubShader
@@ -32,13 +39,15 @@ Shader "Custom/VRCMarker/Trail Renderer"
             #pragma fragment frag
             #pragma target 4.5
 
+            #pragma multi_compile_local _ _GRADIENT_ENABLED
+
 
             #include "UnityCG.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv0 : TEXCOORD0;
+                //float2 uv0 : TEXCOORD0;
                 float3 otherPos : NORMAL;
                 uint vertexID : SV_VertexID;
 
@@ -50,13 +59,20 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float4 vertex : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 nointerpolation bool isLine : TEXCOORD1;
-                // uint vertexID : TEXCOORD2;
+
+                #ifdef _GRADIENT_ENABLED
+                    half3 gradient : TEXCOORD2;
+                #endif
 
                 UNITY_VERTEX_OUTPUT_STEREO //Insert
             };
 
             half3 _Color;
             half _Scale;
+            half _GradientPeriod;
+            half4 _Gradient[8];
+            bool _UseGradient;
+            uint _GradientLength;
 
             float3 centerEyePos()
             {
@@ -103,6 +119,40 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 float2(1.077350269189625764509148780501f, 0)
             };
 
+            struct Gradient
+            {
+                int type;
+                int colorsLength;
+                half4 colors[8];
+            };
+
+            Gradient NewGradient(int type, int colorsLength, half4 colors[8])
+            {
+                Gradient output =
+                {
+                    type, colorsLength, colors
+                };
+                return output;
+            }
+
+            half3 EvaluateGradient(Gradient gradient, half time)
+            {
+                half3 color = gradient.colors[0].rgb;
+                [unroll(6)]
+                for (int c = 1; c < gradient.colorsLength; c++)
+                {
+                    half colorPos = saturate((time - gradient.colors[c - 1].w) / (gradient.colors[c].w - gradient.colors[c - 1].w)) * step(c, gradient.colorsLength - 1);
+                    color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+                }
+
+                return color;
+            }
+
+            half evaluateTime(uint id, half frequency)
+            {
+                half t = (sin((float)id / frequency) + 1.0) / 2.0;
+                return t;
+            }
 
             v2f vert(appdata v)
             {
@@ -156,9 +206,29 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 
                 o.uv0 = offset;
                 o.isLine = isLine;
-                // o.vertexID = v.vertexID;
+
+                #ifdef _GRADIENT_ENABLED
+
+                    uint index = v.vertexID % 7;
+                    half vv = index >= 2 ? v.vertexID - index : v.vertexID + (7 - index);
+                    // half vv = v.vertexID;
+
+                    if (!isLine)
+                    {
+                        vv = v.vertexID + index - 3;
+                    }
+
+                    half t = evaluateTime(vv, _GradientPeriod);
+                    Gradient g = NewGradient(0, _GradientLength, _Gradient);
+                    // color = EvaluateGradient(g,t);
+
+                    o.gradient = EvaluateGradient(g,t);
+                    // o.gradient = m;
+                #endif
+                
                 return o;
             }
+
 
             half4 frag(v2f i) : SV_Target
             {
@@ -166,7 +236,6 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 
                 half alpha = 1;
 
-                // return half4(i.vertexID.rrr/100., alpha);
 
                 UNITY_BRANCH
                 if (!i.isLine)
@@ -180,7 +249,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                     float pwidth = fwidth(circle);
                     alpha = saturate((size - circle) / pwidth);
-
+                    // alpha = 0;
                 }
                 else
                 {
@@ -190,9 +259,19 @@ Shader "Custom/VRCMarker/Trail Renderer"
 
                     alpha = saturate((size) / pwidth);
                     alpha = saturate(alpha + pwidth / 2);
+                    // alpha = 0;
                 }
 
-                return half4(_Color.rgb, alpha);
+
+
+                #ifdef _GRADIENT_ENABLED
+                    half3 color = i.gradient;
+                #else
+                    half3 color = _Color;
+                #endif
+
+
+                return half4(color, alpha);
             }
             ENDCG
         }
