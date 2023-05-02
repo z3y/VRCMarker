@@ -157,7 +157,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
             half3 EvaluateGradient(Gradient gradient, half time)
             {
                 half3 color = gradient.colors[0].rgb;
-                [unroll(8)]
+                [unroll(6)]
                 for (int c = 1; c < gradient.colorsLength; c++)
                 {
                     half colorPos = saturate((time - gradient.colors[c - 1].w) / (gradient.colors[c].w - gradient.colors[c - 1].w)) * step(c, gradient.colorsLength - 1);
