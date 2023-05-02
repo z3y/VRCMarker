@@ -210,7 +210,7 @@ Shader "Custom/VRCMarker/Trail Renderer"
                 #ifdef _GRADIENT_ENABLED
 
                     uint index = v.vertexID % 7;
-                    half vv = index >= 2 ? v.vertexID - index : v.vertexID + (7 - index);
+                    float vv = index >= 2 ? v.vertexID - index : v.vertexID + (7 - index);
                     // half vv = v.vertexID;
 
                     if (!isLine)
