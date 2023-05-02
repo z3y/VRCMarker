@@ -104,8 +104,12 @@ namespace VRCMarker
 
         private void Update()
         {
-            _time += Time.deltaTime;
+            if (!enabled) // can end up running for a frame breaking things
+            {
+                return;
+            }
 
+            _time += Time.deltaTime;
 
             _smoothingPosition = Vector3.Lerp(trailPosition.position, _previousSmoothingPosition, _smoothingCached);
             _previousSmoothingPosition = _smoothingPosition;
@@ -113,7 +117,7 @@ namespace VRCMarker
             UpdateLastPosition(_smoothingPosition, _previousPosition);
             UpdateMeshData();
 
-            if (_time <= updateRate || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance || !enabled)
+            if (_time <= updateRate || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance)
             {
                 return;
             }
@@ -164,18 +168,18 @@ namespace VRCMarker
 
             if (isLocal && GetSyncLines().Length > 1)
             {
-                AddEndCap();
+                //AddEndCap();
                 StoreLastLinesTransform(_smoothingPosition);
                 RecalculateMeshBounds();
             }
         }
 
-        public void AddEndCap()
+       /* public void AddEndCap()
         {
             CreateTrailLine(_previousPosition, _smoothingPosition);
             //CreateTrailLine(_smoothingPosition, _previousPosition); // mot needed anymore
             UpdateMeshData();
-        }
+        }*/
 
 
 
