@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802848, g: 0.22571494, b: 0.30692366, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -234,7 +234,7 @@ PrefabInstance:
     - target: {fileID: 1055321711490392694, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: blueprintId
-      value: wrld_df859907-113e-445b-9ec7-37c900c36c75
+      value: wrld_c91cce4c-3568-462b-91aa-93307b8d9866
       objectReference: {fileID: 0}
     - target: {fileID: 1055321711490392694, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
@@ -1045,12 +1045,12 @@ PrefabInstance:
         type: 3}
       propertyPath: DynamicMaterials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: dfff2cc7941433f4d82fa7cbca153b76, type: 2}
+      objectReference: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[3]
       value: 
-      objectReference: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 2100000, guid: dfff2cc7941433f4d82fa7cbca153b76, type: 2}
     - target: {fileID: 6759095419728963412, guid: 8894fa7e4588a5c4fab98453e558847d,
         type: 3}
       propertyPath: DynamicMaterials.Array.data[4]
@@ -6398,7 +6398,7 @@ PrefabInstance:
     - target: {fileID: 7487325458106536107, guid: d623141a231a48e43b02346883eea70d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7926863938251667743, guid: d623141a231a48e43b02346883eea70d,
         type: 3}

@@ -276,7 +276,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
                     _Gradient6,
                     _Gradient7
                     );
-                    color = EvaluateGradient(g,t);
+                    // color = EvaluateGradient(g,t);
+                    color = t;
                 #endif
 
                 return half4(color, alpha);

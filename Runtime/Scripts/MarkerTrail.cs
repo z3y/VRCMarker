@@ -32,8 +32,6 @@ namespace VRCMarker
         private int _lastTrianglesUsed = 0;
 
         private Mesh _mesh;
-        private Mesh _trailing;
-        public MeshFilter trailingMesh;
         public MeshFilter trailStorage;
 
         private float _time = 0;
@@ -56,13 +54,6 @@ namespace VRCMarker
             _mesh.MarkDynamic();
             trailStorage.GetComponent<MeshFilter>().sharedMesh = _mesh;
 
-            _trailing = new Mesh();
-            _trailing.name = "Trailing";
-            _trailing.MarkDynamic();
-            trailingMesh.sharedMesh = _trailing;
-
-
-
             var propertyBlock = new MaterialPropertyBlock();
 
 #if UNITY_ANDROID
@@ -74,13 +65,10 @@ namespace VRCMarker
             propertyBlock.SetFloat("_Scale", width);
 
             trailStorage.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
-            trailingMesh.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
-
-            trailingMesh.gameObject.SetActive(false);
 
             ResetTransforms();
 
-            CreateTrailingLineConstants();
+
             enabled = false;
         }
 
@@ -95,7 +83,8 @@ namespace VRCMarker
             _smoothingPosition = Vector3.Lerp(trailPosition.position, _previousSmoothingPosition, _smoothingCached);
             _previousSmoothingPosition = _smoothingPosition;
 
-            UpdateTrailingLine(_smoothingPosition, _previousPosition);
+            UpdateLastPosition(_smoothingPosition, _previousPosition);
+            UpdateMeshData();
 
             if (_time <= updateRate || Vector3.Distance(_smoothingPosition, _previousPosition) < minDistance || !enabled)
             {
@@ -103,7 +92,6 @@ namespace VRCMarker
             }
 
             CreateTrailLine(_previousPosition, _smoothingPosition);
-            UpdateMeshData();
             StoreLastLinesTransform(_smoothingPosition);
             if (_syncLinesUsed == 6)
             {
@@ -128,13 +116,12 @@ namespace VRCMarker
             _smoothingPosition = position;
             _previousSmoothingPosition = position;
             _previousPosition = position;
-            trailingMesh.gameObject.SetActive(true);
             CreateTrailLine(position, position);
 
-            UpdateTrailingLine(position, position);
             StoreLastLinesTransform(position);
             UpdateMeshData();
 
+            CreateTrailLine(position, position); // for point at tip
 
             enabled = true;
         }
@@ -146,7 +133,6 @@ namespace VRCMarker
 
             _time = 0;
             _smoothingCached = 1;
-            trailingMesh.gameObject.SetActive(false);
 
 
             if (isLocal && GetSyncLines().Length > 1)
@@ -164,15 +150,8 @@ namespace VRCMarker
             UpdateMeshData();
         }
 
-        public void UpdateMeshData()
-        {
-            _mesh.vertices = _vertices;
-            _mesh.triangles = _triangles;
-            _mesh.normals = _normals;
-            //_mesh.SetUVs(0, _uv);
-            //_mesh.RecalculateBounds();
-            _mesh.bounds = _infBounds;
-        }
+
+
 
         public void RecalculateMeshBounds() => _mesh.RecalculateBounds();
 
@@ -195,121 +174,6 @@ namespace VRCMarker
             _lastTrianglesUsed = 0;
             ResetSyncLines();
         }
-
-        private void CreateTrailingLineConstants()
-        {
-            var vertices = new Vector3[10];
-            // lines
-            //vertices[0] = Vector3.zero;
-            //vertices[1] = Vector3.zero;
-            //vertices[2] = Vector3.zero;
-            //vertices[3] = Vector3.zero;
-            // connections
-            //vertices[4] = Vector3.zero;
-            //vertices[5] = Vector3.zero;
-            //vertices[6] = Vector3.zero;
-            //vertices[7] = Vector3.zero;
-            //vertices[8] = Vector3.zero;
-            //vertices[9] = Vector3.zero;
-
-            var triangles = new int[12];
-            // lines
-            triangles[0] = 0;
-            triangles[1] = 1;
-            triangles[2] = 2;
-            triangles[3] = 0;
-            triangles[4] = 2;
-            triangles[5] = 3;
-            // connections
-            triangles[6] = 6;
-            triangles[7] = 5;
-            triangles[8] = 4;
-            triangles[9] = 9;
-            triangles[10] = 8;
-            triangles[11] = 7;
-
-            //var uv = new Vector2[10];
-            // lines
-/*            uv[0] = _UV_0;
-            uv[1] = _UV_1;
-            uv[2] = _UV_2;
-            uv[3] = _UV_3;
-            // connections
-            uv[4] = _UV_4;
-            uv[5] = _UV_5;
-            uv[6] = _UV_6;
-            uv[7] = _UV_4;
-            uv[8] = _UV_5;
-            uv[9] = _UV_6;*/
-
-            var normals = new Vector3[10];
-            // lines
-            //normals[0] = Vector3.zero;
-            //normals[1] = Vector3.zero;
-            //normals[2] = Vector3.zero;
-            //normals[3] = Vector3.zero;
-            // connections
-            //normals[4] = Vector3.zero;
-            //normals[5] = Vector3.zero;
-            //normals[6] = Vector3.zero;
-
-            _trailing.vertices = vertices;
-            _trailing.triangles = triangles;
-            _trailing.normals = normals;
-            //_trailing.SetUVs(0, uv);
-        }
-
-        private Vector3[] _trailingVertices = new Vector3[10];
-        private Vector3[] _trailingNormals = new Vector3[10];
-
-        private void UpdateTrailingLine(Vector3 start, Vector3 end)
-        {
-            // lines
-            /*_trailingVertices[0] = start;
-            _trailingVertices[1] = start;
-            _trailingVertices[2] = end;
-            _trailingVertices[3] = end;
-            // connections
-            _trailingVertices[4] = start;
-            _trailingVertices[5] = start;
-            _trailingVertices[6] = start;
-            _trailingVertices[7] = end;
-            _trailingVertices[8] = end;
-            _trailingVertices[9] = end;
-
-            // lines
-            _trailingNormals[0] = end;
-            _trailingNormals[1] = end;
-            _trailingNormals[2] = start;
-            _trailingNormals[3] = start;*/
-
-            // does the same as code above but in less readable order might be more performant
-            _trailingVertices[0] = start;
-            _trailingVertices[1] = start;
-            _trailingVertices[4] = start;
-            _trailingVertices[5] = start;
-            _trailingVertices[6] = start;
-            _trailingNormals[2] = start;
-            _trailingNormals[3] = start;
-            _trailingVertices[2] = end;
-            _trailingVertices[3] = end;
-            _trailingVertices[7] = end;
-            _trailingVertices[8] = end;
-            _trailingVertices[9] = end;
-            _trailingNormals[0] = end;
-            _trailingNormals[1] = end;
-
-            // connections, already zero
-            //normals[4] = Vector3.zero;
-            //normals[5] = Vector3.zero;
-            //normals[6] = Vector3.zero;
-
-            _trailing.vertices = _trailingVertices;
-            _trailing.normals = _trailingNormals;
-            //_trailing.RecalculateBounds();
-            _trailing.bounds = _infBounds;
-        }
-
         /*
                 // moved to the shader 
                 private readonly Vector2 _UV_0 = new Vector2(0, 0);
@@ -352,18 +216,28 @@ namespace VRCMarker
 
         private const int VertexIncrement = 7;
         private const int TriangleIncrement = 9;
+
+
+        int v0;
+        int v1;
+        int v2;
+        int v3;
+        int v4;
+        int v5;
+        int v6;
+
         public void CreateTrailLine(Vector3 end, Vector3 start)
         {
             
             UpdateArraySize(VertexIncrement, TriangleIncrement);
 
-            int v0 = _verticesUsed;
-            int v1 = _verticesUsed + 1;
-            int v2 = _verticesUsed + 2;
-            int v3 = _verticesUsed + 3;
-            int v4 = _verticesUsed + 4;
-            int v5 = _verticesUsed + 5;
-            int v6 = _verticesUsed + 6;
+            v0 = _verticesUsed;
+            v1 = _verticesUsed + 1;
+            v2 = _verticesUsed + 2;
+            v3 = _verticesUsed + 3;
+            v4 = _verticesUsed + 4;
+            v5 = _verticesUsed + 5;
+            v6 = _verticesUsed + 6;
 
             int t0 = _trianglesUsed;
             int t1 = _trianglesUsed + 1;
@@ -419,6 +293,41 @@ namespace VRCMarker
 
             _verticesUsed += VertexIncrement;
             _trianglesUsed += TriangleIncrement;
+        }
+
+        private void UpdateLastPosition(Vector3 start, Vector3 end)
+        {
+            // temp
+            if (v1 == 0)
+            {
+                return;
+            }
+
+            _vertices[v0] = start;
+            _vertices[v1] = start;
+            _vertices[v2] = end;
+            _vertices[v3] = end;
+
+            _vertices[v4] = start;
+            _vertices[v5] = start;
+            _vertices[v6] = start;
+
+            _normals[v0] = end;
+            _normals[v1] = end;
+            _normals[v2] = start;
+            _normals[v3] = start;
+        }
+
+        public void UpdateMeshData()
+        {
+
+
+            _mesh.vertices = _vertices;
+            _mesh.triangles = _triangles;
+            _mesh.normals = _normals;
+            //_mesh.SetUVs(0, _uv);
+            //_mesh.RecalculateBounds();
+            _mesh.bounds = _infBounds;
         }
 
         private void StoreLastLinesTransform(Vector3 position)
@@ -585,7 +494,6 @@ namespace VRCMarker
         public void ResetTransforms()
         {
             ResetTRS(transform);
-            ResetTRS(trailingMesh.transform);
             ResetTRS(trailStorage.transform);
         }
 
