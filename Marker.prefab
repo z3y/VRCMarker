@@ -394,9 +394,38 @@ MonoBehaviour:
   trailEmission: 1
   width: 0.003
   smoothing: 0.67
-  updateRate: 0.03
-  minDistance: 0.002
-  vertexLimit: 32000
+  updateRate: 0.04
+  minDistance: 0.004
+  trailType: 0
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!1 &6357700640741054161
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,14 +482,42 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 7191321336371695368}
   marker: {fileID: 247781027315986262}
   trailPosition: {fileID: 1403787091852531294}
+  trailType: 0
   color: {r: 1, g: 1, b: 1, a: 0}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
   emission: 1
-  minDistance: 0.002
+  minDistance: 0.004
   width: 0.003
-  updateRate: 0.03
+  updateRate: 0.04
   smoothing: 0.67
-  vertexLimit: 32000
-  trailingMesh: {fileID: 0}
   trailStorage: {fileID: 9083297691627360494}
   isLocal: 0
 --- !u!114 &7191321336371695368
