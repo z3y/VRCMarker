@@ -47,10 +47,17 @@ The circle is just a single triangle that has all 3 vertices positioned the same
 
 To create a circle inside the triangle we use a cutout shader, the outer parts are just discarded in the fragment shader. The center position is just passed from vertex to fragment, which makes it easy to draw a circle inside the triangle.
 
-https://github.com/z3y/VRCMarker/assets/33181641/ffeddaa7-b91b-4993-9b17-b6727b0ccc8b
+![Circle](/Images~/circle.png)
 
+https://github.com/z3y/VRCMarker/assets/33181641/ffeddaa7-b91b-4993-9b17-b6727b0ccc8b
 ### The Line
 The line has 4 vertices, 2 of which are positioned at the start of a trail line and 2 at the end. Each end knows where the position of the other end is because we encode this position data in the normals attribute in Udon (its just another vector3[] we can use it however we want in the shader). The 2 vertices on each side are expanded in the opposite directions which creates a visible line. We know where to move each vertex and keep it facing the camera, the same way as for the circle, from the vertexID. We also know the expand direction from the cross product of the vertex pos and the vertex pos at the other end (from vertex position and our "normals"). This is also billboarded in a way that allows it to rotate around the axis of the line while facing the camera position.
+
+v1 = otherPos - vertexPos; 
+v2 = camPos - vertexPos;
+v3 = +-cross(v1, v2)
+
+![Line](/Images~/line.png)
 
 https://github.com/z3y/VRCMarker/assets/33181641/61778357-57b1-47b9-bab9-f06d624218dc
 
