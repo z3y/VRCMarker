@@ -42,7 +42,7 @@ A trail line consists of 2 parts: a quad and a circle  (4 verts for the quad + 3
 The circle is just a single triangle that has all 3 vertices positioned the same by Udon. It is expanded in the vertex shader to the proper position to create an equilateral triangle. We know where to move each vertex because we always set them in the same order in Udon and we can get this order with `SV_VertexID`. If we calculate `vertexID % 7` we get an uint in range [0, 6]. This will tell us the position where the vertex needs to get moved and whether it is a connecting quad or a cirlce part of the trail. Since we know where the center of our triangle is (the vertex position we set in udon) we can rotate around it so it always faces the camera position. This is done in 2 steps, where each one rotates it along 1 axis at a time, in WS to always be accurate on all cameras
 To create a circle inside the triangle we use a cutout shader, the outer parts are just discarded in the fragment shader
 
-The quad 
+The quad has 4 vertices, 2 of which are positioned at the start of a trail line and 2 at the end. Each end knows where the position of the other end is because we encode this position data in the normals attribute in Udon (its just another vector3[] we can use it however we want in the shader). The 2 vertices on each side are expanded in the opposite directions which creates a visible line. We know where to move each vertex the same way as for the triangles, from the vertexID. We also know the expand direction from the cross product of the vertex pos and the vertex pos at the other end (from vertex position and our "normals"). This is also billboarded in a way that allows it to rotate around the axis of the line while facing the camera position
 
 
 The end cap
