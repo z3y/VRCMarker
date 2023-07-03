@@ -10,16 +10,24 @@
 
 ## Installation
 
+### VRChat Creator Companion
+- Add to VCC https://z3y.github.io/vpm-package-listing/
+    - Requires VCC v2.1.2+
+- Drag in the Prefab from the Packages folder in the Project Window
+
+### Unity Package
+
 - Download the Unity Package from [releases](https://github.com/z3y/VRCMarker/releases)  and import into Unity
 - Drag the Marker Prefab in your scene
 - Adjust settings on the GameObject
 
-Alternatively you can install with the package manager:
+### Package Manager
+Alternatively you can install with the Unity Package Manager:
 ```
 https://github.com/z3y/VRCMarker.git
 ```
 
-> Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
+- Requires UdonSharp v1 - [VCC](https://vcc.docs.vrchat.com/) Version
 
 #
 
