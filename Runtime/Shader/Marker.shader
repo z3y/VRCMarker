@@ -13,8 +13,7 @@
         _AccentSaturation ("Saturation", Range(0,1)) = 0.8
 
         [Space(10)]
-        [ToggleUI] _toggle ("LTCGI: To enable open the shader file", Float) = 0 // line 31
-
+        [Toggle(_LTCGI)] _LTCGI_Toggle ("Enable LTCGI", Float) = 0
     }
 
     SubShader
@@ -26,16 +25,16 @@
         #pragma surface surf Standard addshadow
         #pragma target 4.5
 
-        // shader feature was causing issues and didnt want to compile
-        // uncomment to enable LTCGI:
-        //#define LTCGI
+        #pragma shader_feature_local _LTCGI
 
         #ifdef SHADER_API_MOBILE
-        #undef LTCGI
+            #undef _LTCGI
         #endif
-
-        #ifdef LTCGI
-            #include "Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc"
+    
+        #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+            #if defined(_LTCGI)
+                #include "Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc"
+            #endif
         #endif
 
         float GSAA(float3 worldNormal, float perceptualRoughness)
