@@ -1,5 +1,5 @@
 # VRCMarker
-
+This is the free version, a new improved version with more features is here https://z3y.gumroad.com/l/vrcm
 ## Features
 - Custom Trail Renderer written in Udon, inspired by [Unity XR Line Renderer](https://github.com/Unity-Technologies/XRLineRenderer)
 - Rounded Trail on PC and Quest
