@@ -35,7 +35,7 @@
         #endif
 
         #ifdef LTCGI
-            #include "Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc"
+            #include "Packages/at.pimaker.ltcgi/Shaders/LTCGI.cginc"
         #endif
 
         float GSAA(float3 worldNormal, float perceptualRoughness)

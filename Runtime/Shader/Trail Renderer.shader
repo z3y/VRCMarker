@@ -270,6 +270,8 @@ Shader "Custom/VRCMarker/Trail Renderer"
                     half3 color = _Color;
                 #endif
 
+                clip(alpha - 0.1);
+
 
                 return half4(color, alpha);
             }
