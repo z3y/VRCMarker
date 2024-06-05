@@ -1,12 +1,21 @@
 # VRCMarker
-This is the free version, a new improved version with more features is here https://z3y.gumroad.com/l/vrcm or https://z3y.booth.pm/items/5524432
+
+Get the new improved pro version here [z3y.gumroad.com/l/vrcm](https://z3y.gumroad.com/l/vrcm)
+
 ## Features
-- Custom Trail Renderer written in Udon, inspired by [Unity XR Line Renderer](https://github.com/Unity-Technologies/XRLineRenderer)
-- Rounded Trail on PC and Quest
-- Optimized with no overhead while idle
+### Free
+- Custom Line Renderer with rounded lines on both PC and Quest
 - Accurate Sync
-- Trail Emission
+- Line Emission
 - Smooth Gradients
+- Optimized
+- Undo
+
+### [Pro](https://z3y.gumroad.com/l/vrcm)
+- Eraser
+- Late join sync
+- Smooth and Accurate Sync
+- Write on surface
 
 ## Installation
 
