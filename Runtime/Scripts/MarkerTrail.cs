@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -19,10 +18,10 @@ namespace VRCMarker
 
 
         public float emission = 1f;
-        public float minDistance = 0.002f;
+        public float minDistance = 0.0025f;
         public float width = 0.003f;
         public float updateRate = 0.03f;
-        public float smoothing = 0.67f;
+        public float smoothingTime = 0.06f;
         private float _smoothingCached = 1;
 
         private Vector3[] _vertices = new Vector3[0];
@@ -30,7 +29,7 @@ namespace VRCMarker
         private Vector3[] _normals = new Vector3[0];
         //private Vector2[] _uv = new Vector2[0];
 
-        const int _vertexLimit = 16000;
+        const int _vertexLimit = 32000;
         private int _verticesUsed = 0;
         private int _lastVerticesUsed = 0;
         private int _trianglesUsed = 0;
@@ -102,6 +101,10 @@ namespace VRCMarker
             pb.SetVectorArray("_Gradient", gradients);
         }
 
+        Vector3 _previousUnsmoothedPosition = Vector3.zero;
+        Vector3 _previousDirectionChange = Vector3.one.normalized;
+        Vector3 _previousDirection = Vector3.one.normalized;
+
         private void Update()
         {
             if (!enabled) // can end up running for a frame breaking things
@@ -109,10 +112,17 @@ namespace VRCMarker
                 return;
             }
 
-            _time += Time.deltaTime;
+            var t = Time.deltaTime;
 
-            _smoothingPosition = Vector3.Lerp(trailPosition.position, _previousSmoothingPosition, _smoothingCached);
+            _time += t;
+
+            var tipPosition = trailPosition.position;
+            _smoothingPosition = Vector3.Lerp(_previousSmoothingPosition, tipPosition, t / _smoothingCached);
             _previousSmoothingPosition = _smoothingPosition;
+
+            Vector3 currentDirection = tipPosition - _previousUnsmoothedPosition;
+            _previousUnsmoothedPosition = tipPosition;
+
 
             UpdateLastPosition(_smoothingPosition, _previousPosition);
             UpdateMeshData();
@@ -121,6 +131,20 @@ namespace VRCMarker
             {
                 return;
             }
+            if (!(_time >= updateRate && Vector3.Distance(_previousPosition, _smoothingPosition) > minDistance &&
+                (Vector3.Cross(_previousDirection, tipPosition - _previousPosition).magnitude > 0.001f ||
+                 Vector3.Angle(_previousDirectionChange, currentDirection) > 25.0f
+                )))
+            {
+                return;
+            }
+
+            if (!currentDirection.Equals(Vector3.zero))
+            {
+                _previousDirectionChange = currentDirection.normalized;
+            }
+
+            _previousDirection = (tipPosition - _previousPosition).normalized;
 
             CreateTrailLine(_previousPosition, _smoothingPosition);
             StoreLastLinesTransform(_smoothingPosition);
@@ -139,7 +163,7 @@ namespace VRCMarker
             if (enabled) return;
 
             _time = 0;
-            _smoothingCached = smoothing;
+            _smoothingCached = smoothingTime;
             _lastVerticesUsed = _verticesUsed;
             _lastTrianglesUsed = _trianglesUsed;
 
@@ -521,7 +545,6 @@ namespace VRCMarker
         /// <summary>
         /// Fix culling and other issues caused by transforms not being at zero when moving the root after Start.
         /// </summary>
-        [PublicAPI]
         public void ResetTransforms()
         {
             ResetTRS(transform);

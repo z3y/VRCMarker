@@ -23,10 +23,10 @@ namespace VRCMarker
 
 
         [Range(0.001f, 0.01f)] public float width = 0.003f;
-        [Range(0f, 1f)] public float smoothing = 0.67f;
+        [Range(0.01f, 0.99f)] public float smoothingTime = 0.06f;
         
         [Tooltip("Min time before new lines are added")][Range(0.02f, 0.2f)] public float updateRate = 0.03f;
-        [Tooltip("Min distance before new lines are added")][Range(0.001f, 0.01f)] public float minDistance = 0.002f;
+        [Tooltip("Min distance before new lines are added")][Range(0.001f, 0.01f)] public float minDistance = 0.0025f;
 
         [Header("Color Settings")]
         public TrailType trailType;
@@ -55,7 +55,7 @@ namespace VRCMarker
             markerTrail.trailType = (int)trailType;
 
             markerTrail.width = width;
-            markerTrail.smoothing = smoothing;
+            markerTrail.smoothingTime = smoothingTime;
             markerTrail.updateRate = updateRate;
             markerTrail.minDistance = minDistance;
             //markerTrail._vertexLimit = vertexLimit;
