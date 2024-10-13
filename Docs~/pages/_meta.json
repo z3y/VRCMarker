@@ -1,13 +1,14 @@
 {
-  "index": "Getting Started",
+  "index": "Introduction",
+  "features": "Features",
   "how": "How It Works",
-  "-- Free": {
-    "type": "separator",
-    "title": "Free"
-  },
   "-- Pro": {
     "type": "separator",
     "title": "Pro"
   },
-  "subdivision": "Subdivision"
+  "subdivision": "Subdivision",
+  "desktop-utilities": "Desktop Utilities",
+  "eraser": "Eraser",
+  "late-join": "Late Join Sync",
+  "smoothing-modes": "Smoothing Modes"
 }
