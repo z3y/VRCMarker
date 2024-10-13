@@ -3,6 +3,6 @@
   "description": "Markers for VRChat with a custom trail renderer written in udon with rounded trail on both PC and Quest",
   "version": "2.3.0",
   "unity": "2019.4",
-  "displayName": "z3y - VRCMarker",
+  "displayName": "VRCMarker",
   "hideInEditor": false
 }

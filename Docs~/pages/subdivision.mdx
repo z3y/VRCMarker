@@ -1,0 +1,13 @@
+import Image from "next/image"
+
+# Distance Based Subdivision
+
+The line renderer shader has access to all vertices so it was possible to subdivide it using Catmull-Rom. This provides smoother lines without doubling the cost of networking. Not available on Android. The default subdivision distance is set to \<3m from the camera position and is adjustable on the line renderer material.
+
+## Solid Preview
+
+![Image](/subdivision-solid.avif)
+
+## Wireframe Preview
+
+<Image src="/VRCMarker/subdivision-wireframe.avif" width={1178} height={500} />

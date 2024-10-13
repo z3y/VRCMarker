@@ -1,0 +1,30 @@
+import { Tabs } from "nextra/components"
+import themeConfig from "../theme.config"
+import { useState } from "react"
+import { Cards, Card } from "nextra/components"
+import Image from "next/image"
+
+# VRCMarker
+
+## About
+
+VRCMarker uses a custom rounded line renderer, instead the Unity Line Renderer component which, provides better looking 3D lines for VR and works on both Quest and PC. The mesh is generated with Udon and shaders transform and billboard vertices in order to create a convincing line. You can read more about how it works [here](/how.mdx).
+
+## Install
+
+### Free
+
+<Tabs items={["VRChat Creator Companion", "Unity Package Manager"]}>
+  <Tabs.Tab>
+    Add the package listing <b>https://z3y.github.io/vpm-package-listing</b>
+  </Tabs.Tab>
+  <Tabs.Tab>
+    Add the git url <b>{themeConfig.project.link + ".git"}</b>
+  </Tabs.Tab>
+</Tabs>
+
+### Pro
+
+Import the unity package. The imported files will appear in the Packages directory in the Project Window
+
+![Image](/import-package.avif)

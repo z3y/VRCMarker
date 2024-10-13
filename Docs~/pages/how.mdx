@@ -1,0 +1,55 @@
+import Image from "next/image"
+
+# How It Works
+
+## Line Segment
+
+A rounded line segment consists a connecting line and a circle (3 verts for a triangle + 4 verts for the quad).
+
+![Image](/line.avif)
+
+### The Circle
+
+The circle part is a triangle with outer parts discarded in the fragment shader. It is expanded from the center point in the vertex shader to create an equilateral triangle. Each vertex is always set in the same order and by using `SV_VertexID` its possible to expand them in correct direction. By calculating `vertexID % 7` we get an uint in range [0, 6] which tells us the direction where the vertex needs to be moved and whether it is a connecting line or a cirlce part of the line (first 4 are for connecting line, last 3 for the circle). Since the center point of the triangle is known, it can rotate around so it always faces the camera position. This is done in 2 steps, where each one rotates it along one axis at a time.
+
+![Circle](/circle.png)
+
+<Image src="/VRCMarker/tri_only.avif" width={500} height={500} />
+
+### The Line
+
+The line has 4 vertices, 2 of which are positioned at the start of a line and 2 at the end. Each end knows where the position of the other end is because its possible to access all points from the render texture. Two vertices on each side are expanded in the opposite directions, which creates a visible line segment. The expand direction of each vertex is known, the same way as for the circle, from the vertexID. This is also billboarded in a way that allows it to rotate around the axis of the line while facing the camera position.
+
+```c
+float3 v1 = otherPos - centerPos;
+float3 v2 = camPos - centerPos;
+float3 v3 = +-cross(v1, v2)
+```
+
+![Line](/line.png)
+
+<Image src="/VRCMarker/line_only.avif" width={500} height={500} />
+
+### Circles + Lines
+
+Combining the two parts together creates a convincing 3D line.
+
+<Image src="/VRCMarker/line_with_tri.avif" width={500} height={500} />
+
+## Storage
+
+Position of each point of the interpolating line is stored in a 32 bit float4 render texture. A sentinel value of 0 marks disconnected lines. New points are written from bottom left to top right with `Graphics.Blit`.
+
+![Image](/rt.avif)
+
+Previously in the free version vertex normals were used for encoding the other end of the line segment in order to have access to two points at once on the same vertex.
+
+### Additional Info
+
+Since the input texture only contains the center positions of each point of the interpolating line it is possible to dynamically adjust the width in a shader with a property that multiplies the expansion direction.
+
+The shader is using alpha clipping with alpha to coverage for anti-aliasing with MSAA.
+
+### Gradients
+
+Gradients are implemented entierly in the shader by interpolating gradient colors with vertexID. It loops between start and end color of the gradient in a sine wave over a set period of line segments.

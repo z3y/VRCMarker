@@ -1,0 +1,13 @@
+{
+  "index": "Getting Started",
+  "how": "How It Works",
+  "-- Free": {
+    "type": "separator",
+    "title": "Free"
+  },
+  "-- Pro": {
+    "type": "separator",
+    "title": "Pro"
+  },
+  "subdivision": "Subdivision"
+}
