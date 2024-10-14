@@ -6,9 +6,10 @@
     "type": "separator",
     "title": "Pro"
   },
+  "updates": "Updates",
+  "eraser": "Eraser",
   "subdivision": "Subdivision",
   "desktop-utilities": "Desktop Utilities",
-  "eraser": "Eraser",
-  "late-join": "Late Join Sync",
+  "smooth-sync": "Smooth Sync",
   "smoothing-modes": "Smoothing Modes"
 }

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import themeConfig from "../theme.config"
 
 # How It Works
 
@@ -14,7 +15,7 @@ The circle part is a triangle with outer parts discarded in the fragment shader.
 
 ![Circle](/circle.png)
 
-<Image src="/VRCMarker/tri_only.avif" width={500} height={500} />
+<Image src={`${themeConfig.prefix}/tri_only.avif`} width={500} height={500} />
 
 ### The Line
 
@@ -28,13 +29,17 @@ float3 v3 = +-cross(v1, v2)
 
 ![Line](/line.png)
 
-<Image src="/VRCMarker/line_only.avif" width={500} height={500} />
+<Image src={`${themeConfig.prefix}/line_only.avif`} width={500} height={500} />
 
 ### Circles + Lines
 
 Combining the two parts together creates a convincing 3D line.
 
-<Image src="/VRCMarker/line_with_tri.avif" width={500} height={500} />
+<Image
+  src={`${themeConfig.prefix}line_with_tri.avif`}
+  width={500}
+  height={500}
+/>
 
 ## Storage
 

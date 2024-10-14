@@ -1,11 +1,20 @@
+const projectName = "VRCMarker"
+
+var pathPrefix = ""
+const isGithubActions = process.env.GITHUB_ACTIONS || false
+if (isGithubActions) {
+  pathPrefix = `/${projectName}`
+}
+
 export default {
   logo: (
     <span>
-      <b>VRCMarker</b>
+      <b>{projectName}</b>
     </span>
   ),
+  prefix: pathPrefix,
   project: {
-    link: "https://github.com/z3y/VRCMarker",
+    link: `https://github.com/z3y/${projectName}`,
   },
   chat: {
     link: "https://discord.gg/bw46tKgRFT",
@@ -24,7 +33,7 @@ export default {
   },
   useNextSeoProps() {
     return {
-      titleTemplate: "%s - VRCMarker",
+      titleTemplate: `%s - ${projectName}`,
     }
   },
 
