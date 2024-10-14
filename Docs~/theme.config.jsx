@@ -1,10 +1,10 @@
 const projectName = "VRCMarker"
 
-var pathPrefix = ""
-const isGithubActions = process.env.GITHUB_ACTIONS || false
-if (isGithubActions) {
-  pathPrefix = `/${projectName}`
-}
+// var pathPrefix = ""
+// const isGithubActions = process.env.GITHUB_ACTIONS || false
+// if (isGithubActions) {
+// }
+const pathPrefix = `/${projectName}`
 
 export default {
   logo: (
