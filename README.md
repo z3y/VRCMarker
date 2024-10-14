@@ -16,6 +16,7 @@ Get the new improved pro version here [z3y.gumroad.com/l/vrcm](https://z3y.gumro
 
 - Eraser
 - Late join sync
+- Subdivision
 - Smooth and Accurate Sync
 - Write on surface
 - [Test World](https://vrchat.com/home/world/wrld_bd718520-e6ab-434b-a070-ee35b42f0d5f)
