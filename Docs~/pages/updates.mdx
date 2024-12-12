@@ -1,5 +1,12 @@
 # Updates
 
+## v3.2.0
+
+- Slight update to the marker design
+- Removed the need for custom shaders on the marker model itself in order to make replacing the model easier
+- A new texture is generated per marker that indicates color or gradient and is assigned to a target property on materials
+- This makes it possible to use the standard shader for example, with a mask and a UV2 detail map to tint markers to their color
+
 ## v3.1.3
 
 - Added reticle to the write on surface mode
