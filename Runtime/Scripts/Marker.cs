@@ -81,12 +81,51 @@ namespace VRCMarker
 
         public void SetColor()
         {
+            _CreateColorTexture();
+        }
+
+        private void OnDestroy()
+        {
+            if (_colorTexture)
+            {
+                Destroy(_colorTexture);
+            }
+        }
+
+        Texture2D _colorTexture;
+        [SerializeField] TextureWrapMode _colorTextureWrapMode = TextureWrapMode.Clamp;
+        [SerializeField] string _colorTextureProperty = "_DetailAlbedoMap";
+        void _CreateColorTexture()
+        {
+            if (!_colorTexture)
+            {
+                _colorTexture = new Texture2D(1, 32, TextureFormat.RGBA32, false, false);
+            }
+            _colorTexture.wrapMode = _colorTextureWrapMode;
+
+            if (markerTrail.trailType == 0)
+            {
+                for (int i = 0; i < _colorTexture.height; i++)
+                {
+                    _colorTexture.SetPixel(0, i, markerTrail.color);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _colorTexture.height; i++)
+                {
+                    float t = (float)i / _colorTexture.height;
+                    _colorTexture.SetPixel(0, i, markerTrail.gradient.Evaluate(t));
+                }
+            }
+
+            _colorTexture.Apply();
             var pb = new MaterialPropertyBlock();
             if (markerMesh.HasPropertyBlock())
             {
                 markerMesh.GetPropertyBlock(pb);
             }
-            pb.SetColor("_Color", markerTrail.color);
+            pb.SetTexture(_colorTextureProperty, _colorTexture);
             markerMesh.SetPropertyBlock(pb);
         }
 
