@@ -1,0 +1,15 @@
+import { Tabs } from "nextra/components"
+import themeConfig from "../theme.config"
+import { useState } from "react"
+import { Cards, Card } from "nextra/components"
+import Image from "next/image"
+
+# Reset
+
+In order to globally reset and respawn all markers:
+
+- Add a `MarkerReset` script to a GameObject
+- Reference all VRCMarkers
+- Call `_ResetMarkers` from a UI Button
+
+<Image src={`${themeConfig.prefix}/reset.png`} width={1000} height={500} />
