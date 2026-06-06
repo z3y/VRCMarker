@@ -2,8 +2,6 @@
 
 A VRChat World prefab for drawing 3D lines on PC and Quest
 
-### [Github Page](https://z3y.github.io/VRCMarker/)
-
 ## Features
 
 ### Free
